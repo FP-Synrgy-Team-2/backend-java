@@ -1,8 +1,8 @@
 package com.example.jangkau.models;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.UUID;
 
 @Getter
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private UUID id;
 
