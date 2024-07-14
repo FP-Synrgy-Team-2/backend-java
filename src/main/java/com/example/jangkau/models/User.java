@@ -1,6 +1,4 @@
 package com.example.jangkau.models;
-
-
 import com.example.jangkau.models.base.BaseDate;
 import com.example.jangkau.models.oauth2.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
