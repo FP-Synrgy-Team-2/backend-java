@@ -1,5 +1,16 @@
 package com.example.jangkau.resources;
 
 public class DummyResource {
-
+    static String[] ACCOUNTS_NUMBER = new String[] {
+            "44441234561","44441244631"
+    };
+    static Double[] ACCOUNTS_BALANCE = new Double[] {
+            1000000.0,2000000.0
+    };
+    static String[] ACCOUNTS_OWNER_NAME = new String[] {
+            "Full Name Admin", "Full Name User"
+    };
+    static Integer[] ACCOUNTS_PIN = new Integer[] {
+            123456,135797
+    };
 }
