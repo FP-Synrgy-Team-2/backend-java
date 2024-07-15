@@ -1,9 +1,11 @@
 package com.example.jangkau.resources;
 
+import com.example.jangkau.models.Account;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Client;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.models.oauth2.RolePath;
+import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RolePathRepository;
@@ -41,6 +43,9 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     @Autowired
     private RolePathRepository rolePathRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     private String defaultPassword = "password";
 
@@ -135,6 +140,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     @Transactional
     public void insertUser(String password) {
+        int i = 0;
         for (String userData : users) {
             String[] str = userData.split(":");
             String username = str[0];
@@ -155,6 +161,20 @@ public class DatabaseSeeder implements ApplicationRunner {
             }
 
             userRepository.save(oldUser);
+            insertAccounts(oldUser, oldUser.getFullName(), i);
+            i++;
         }
+    }
+
+    @Transactional
+    public void insertAccounts(User user, String ownerName, int i) {
+        Account account = Account.builder()
+                .user(user)
+                .ownerName(ownerName)
+                .accountNumber(DummyResource.ACCOUNTS_NUMBER[i])
+                .balance(DummyResource.ACCOUNTS_BALANCE[i])
+                .pin(DummyResource.ACCOUNTS_PIN[i])
+                .build();
+        accountRepository.save(account);
     }
 }
