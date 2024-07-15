@@ -1,6 +1,7 @@
 package com.example.jangkau.models;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -14,11 +15,12 @@ import java.util.UUID;
 @Table(name = "account")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "account_id")
     private UUID id;
 
-    @Column(name = "account_name")
+    @Column(name = "account_number")
     private String accountNumber;
 
     @Column(name = "balance")
@@ -26,4 +28,10 @@ public class Account {
 
     @OneToOne(targetEntity = User.class)
     private User user;
+
+    @Column(name = "owner_name")
+    private String ownerName;
+
+    @Column(name = "pin")
+    private Integer pin;
 }
