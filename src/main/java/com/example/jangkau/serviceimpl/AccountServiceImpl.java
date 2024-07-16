@@ -1,14 +1,20 @@
-package com.example.jangkau.services;
+package com.example.jangkau.serviceimpl;
 
-import com.example.jangkau.dto.AccountResponseDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
+import com.example.jangkau.models.User;
 import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.TransactionRepository;
 
+import com.example.jangkau.repositories.UserRepository;
+import com.example.jangkau.resources.DummyResource;
+import com.example.jangkau.services.AccountService;
+import com.example.jangkau.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +24,8 @@ public class AccountServiceImpl implements AccountService {
     AccountRepository accountRepository;
 
     @Autowired TransactionRepository transactionRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired PasswordEncoder passwordEncoder;
 
     @Override
     public List<Account> getAllAccounts() {
@@ -54,5 +62,21 @@ public class AccountServiceImpl implements AccountService {
         
         accountRepository.save(source);
         accountRepository.save(beneficiary);
+    }
+
+    @Override
+    public void createAccount(User user, String ownerName, int pin, @Nullable Double balance) {
+        User oldUser = userRepository.findByUsername(user.getUsername());
+        Account oldAccount = accountRepository.findByUser(oldUser).orElse(null);
+        if (null == oldAccount) {
+            oldAccount = Account.builder()
+                    .user(user)
+                    .ownerName(ownerName)
+                    .build();
+            oldAccount.setPin(pin, passwordEncoder);
+            if (balance != null) oldAccount.setBalance(balance);
+            else oldAccount.setBalance(0.0);
+            accountRepository.save(oldAccount);
+        }
     }
 }

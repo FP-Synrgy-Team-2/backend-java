@@ -1,6 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.webjars.NotFoundException;
+
 
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
@@ -51,7 +54,6 @@ public class TransactionServiceImpl implements TransactionService{
             }else if (account.getBalance() - transactionsRequestDTO.getAmount() < 50000) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
             }
-
             Transactions newTransaction = Transactions.builder()
                 .account_id(account)
                 .beneficiary_account(beneficiaryAccount)
@@ -70,4 +72,11 @@ public class TransactionServiceImpl implements TransactionService{
         }
     }
 
+    @Override
+    public Transactions getTransaction(String transaction_id) {
+        UUID uuid = UUID.fromString(transaction_id);
+        Transactions transaction = transactionRepository.findById(uuid).orElse(null);
+        if (transaction != null) return transaction;
+        else throw new RuntimeException("transaction not found");
+    }
 }
