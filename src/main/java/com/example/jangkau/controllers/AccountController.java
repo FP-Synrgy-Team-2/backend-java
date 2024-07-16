@@ -1,7 +1,10 @@
 package com.example.jangkau.controllers;
 
+import com.example.jangkau.dto.AccountResponseDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.services.AccountService;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/bank-accounts")
 public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @GetMapping("/bank-accounts")
+    @Autowired ModelMapper modelMapper;
+
+    @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllBankAccounts() {
         Map<String, Object> response = new HashMap<>();
         List<Account> accountList = accountService.getAllAccounts();
@@ -29,7 +36,7 @@ public class AccountController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/bank-accounts/{user_id}")
+    @GetMapping("/{user_id}")
     public ResponseEntity<Map<String, Object>> getBankAccount(@PathVariable("user_id") String id) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountById(id);
@@ -45,7 +52,7 @@ public class AccountController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    @GetMapping("/bank-accounts/{account_number}")
+    @GetMapping("/{account_number}")
     public ResponseEntity<Map<String, Object>> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountByAccountNumber(accountNumber);
@@ -59,5 +66,16 @@ public class AccountController {
         }
         response.put("data", account);
         return new ResponseEntity<>(response, httpStatus);
+    }
+
+    @GetMapping("/saved-accounts/{account_id}")
+    public ResponseEntity<List<AccountResponseDTO>> getSavedAccounts(@PathVariable("account_id") UUID account_id){
+        List<Account> savedAccounts = accountService.getSavedAccount(account_id);
+        List<AccountResponseDTO> savedAccountsList = savedAccounts
+                .stream()
+                .map(account -> modelMapper.map(account, AccountResponseDTO.class))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(savedAccountsList, HttpStatus.OK);
+
     }
 }
