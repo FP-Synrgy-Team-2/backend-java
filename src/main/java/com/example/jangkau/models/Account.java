@@ -2,6 +2,9 @@ package com.example.jangkau.models;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import com.example.jangkau.models.base.BaseDate;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
-public class Account {
+public class Account extends BaseDate{
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
