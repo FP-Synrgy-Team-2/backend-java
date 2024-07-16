@@ -1,10 +1,13 @@
 package com.example.jangkau.models;
 
+import com.example.jangkau.utils.NumberGeneratorUtil;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.example.jangkau.models.base.BaseDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -16,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
-public class Account extends BaseDate{
+public class Account extends BaseDate {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -36,5 +39,16 @@ public class Account extends BaseDate{
     private String ownerName;
 
     @Column(name = "pin")
-    private Integer pin;
+    private String pin;
+
+    @PrePersist
+    public void generateAccountNumber() {
+        if (this.accountNumber == null || this.accountNumber.isEmpty()) {
+            this.accountNumber = NumberGeneratorUtil.generateNumber(12);
+        }
+    }
+
+    public void setPin(Integer pin, PasswordEncoder passwordEncoder) {
+        this.pin = passwordEncoder.encode(pin.toString());
+    }
 }
