@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
@@ -35,6 +36,10 @@ public class TransactionServiceImpl implements TransactionService{
         try {
             Account account_id = accountRepository.getById(transactionsRequestDTO.getAccount_id());
             Account beneficiary_account = accountRepository.getById(transactionsRequestDTO.getBeneficiary_account());
+
+            if (account_id == null || beneficiary_account ==  null) {
+                throw new NotFoundException("Rekening tidak ditemukan");
+            }
             Transactions newTransaction = Transactions.builder()
                 .account(account_id)
                 .beneficiary(beneficiary_account)
