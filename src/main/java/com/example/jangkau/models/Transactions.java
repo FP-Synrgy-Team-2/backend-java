@@ -36,6 +36,8 @@ public class Transactions extends BaseDate{
     @Column(nullable = false)
     private double amount;
 
+    private double admin_fee = 0;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "transaction_date", updatable = false)
     @CreatedDate
