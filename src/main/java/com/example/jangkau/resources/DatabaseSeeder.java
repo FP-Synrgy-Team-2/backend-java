@@ -66,6 +66,8 @@ public class DatabaseSeeder implements ApplicationRunner {
             "ROLE_READ:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS",
             "ROLE_WRITE:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS"
     };
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -168,13 +170,16 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     @Transactional
     public void insertAccounts(User user, String ownerName, int i) {
-        Account account = Account.builder()
-                .user(user)
-                .ownerName(ownerName)
-                .accountNumber(DummyResource.ACCOUNTS_NUMBER[i])
-                .balance(DummyResource.ACCOUNTS_BALANCE[i])
-                .pin(DummyResource.ACCOUNTS_PIN[i])
-                .build();
-        accountRepository.save(account);
+        User oldUser = userRepository.findByUsername(user.getUsername());
+        Account oldAccount = accountRepository.findByUser(oldUser).orElse(null);
+        if (null == oldAccount) {
+            oldAccount = Account.builder()
+                    .user(user)
+                    .ownerName(ownerName)
+                    .balance(DummyResource.ACCOUNTS_BALANCE[i])
+                    .build();
+            oldAccount.setPin(DummyResource.ACCOUNTS_PIN[i], passwordEncoder);
+            accountRepository.save(oldAccount);
+        }
     }
 }

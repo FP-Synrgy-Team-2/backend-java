@@ -16,4 +16,6 @@ public class TransactionsResponseDTO {
     private Date transaction_date;
     private String note;
     private boolean is_saved;
+    private double admin_fee;
+    private double total;
 }

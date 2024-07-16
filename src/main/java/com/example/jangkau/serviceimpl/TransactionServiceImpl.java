@@ -1,6 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -56,4 +57,11 @@ public class TransactionServiceImpl implements TransactionService{
         }
     }
 
+    @Override
+    public Transactions getTransaction(String transaction_id) {
+        UUID uuid = UUID.fromString(transaction_id);
+        Transactions transaction = transactionRepository.findById(uuid).orElse(null);
+        if (transaction != null) return transaction;
+        else throw new RuntimeException("transaction not found");
+    }
 }

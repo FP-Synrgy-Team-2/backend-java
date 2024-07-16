@@ -12,5 +12,5 @@ public interface TransactionService {
 
     TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO);
     
-
+    Transactions getTransaction(String transactionId);
 }
