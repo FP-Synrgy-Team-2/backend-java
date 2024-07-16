@@ -16,7 +16,7 @@ public interface AccountService {
 
     Account getAccountByAccountNumber(String accountNumber);
 
-    List<Account> getSavedAccount(UUID user_id);
+    List<Account> getSavedAccount(UUID account_id);
 
     void updateBalance(Transactions transactions);
 

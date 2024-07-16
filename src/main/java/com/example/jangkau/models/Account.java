@@ -3,13 +3,14 @@ package com.example.jangkau.models;
 import com.example.jangkau.utils.NumberGeneratorUtil;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import com.example.jangkau.models.base.BaseDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -38,7 +39,6 @@ public class Account extends BaseDate {
     @Column(name = "owner_name")
     private String ownerName;
 
-    @Column(name = "pin")
     private String pin;
 
     @PrePersist
@@ -51,4 +51,9 @@ public class Account extends BaseDate {
     public void setPin(Integer pin, PasswordEncoder passwordEncoder) {
         this.pin = passwordEncoder.encode(pin.toString());
     }
+    @OneToMany(mappedBy = "account_id", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsFrom;
+
+    @OneToMany(mappedBy = "beneficiary_account", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsTo;
 }

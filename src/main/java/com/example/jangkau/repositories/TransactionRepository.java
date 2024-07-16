@@ -18,6 +18,6 @@ public interface TransactionRepository extends JpaRepository<Transactions, UUID>
                 "from transactions t \r\n" + //
                 "left join account a on t.account_id = a.account_id \r\n" + //
                 "left join account aa on t.beneficiary_account = aa.account_id \r\n" + //
-                "where t.account_id = ?1 and is_saved = true and deleted_date is null", nativeQuery = true)
-    List<Account> findSavedAccounts(UUID user_id);
+                "where t.account_id = ? and is_saved = true and deleted_date is null", nativeQuery = true)
+    List<Account> findSavedAccounts(UUID account_id);
 } 
