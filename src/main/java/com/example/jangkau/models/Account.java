@@ -2,11 +2,12 @@ package com.example.jangkau.models;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import com.example.jangkau.models.base.BaseDate;
 
 import javax.persistence.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -37,4 +38,10 @@ public class Account extends BaseDate{
 
     @Column(name = "pin")
     private Integer pin;
+
+    @OneToMany(mappedBy = "account_id", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsFrom;
+
+    @OneToMany(mappedBy = "beneficiary_account", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsTo;
 }

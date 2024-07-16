@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
+import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.TransactionService;
@@ -34,10 +35,13 @@ public class TransactionController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody TransactionsRequestDTO transactionsRequestDTO){
         Map<String, Object> response = new HashMap<>();
-
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
         if (newTransaction != null) {
+            Account account_id = accountService.getAccountById(newTransaction.getAccount_id().toString());
+            Account beneficiary = accountService.getAccountById(newTransaction.getBeneficiary_account().toString());
             Transactions trans = modelMapper.map(newTransaction, Transactions.class);
+            trans.setAccount_id(account_id);
+            trans.setBeneficiary_account(beneficiary);
             accountService.updateBalance(trans);
         }
         response.put("status", "suscces");

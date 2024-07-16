@@ -49,10 +49,10 @@ public class Transactions extends BaseDate{
 
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "account_id")
-    private Account account;
+    private Account account_id;
 
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "beneficiary_account")
-    private Account beneficiary;
+    private Account beneficiary_account;
 
 }
