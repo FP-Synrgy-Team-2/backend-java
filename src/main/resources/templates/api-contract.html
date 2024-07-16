@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Contract - Jangkau</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+        .endpoint {
+            margin: 20px 0;
+        }
+        .endpoint .summary {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>API Contract - Jangkau</h1>
+    <p><strong>Base Url : https://koyeb-db-preview-app-jangkau-81ff3049.koyeb.app/api</strong></p>
+
+    <div class="endpoint">
+        <h2>POST /auth</h2>
+        <p class="summary">Login</p>
+        <p><strong>Request Body:</strong> <em>Data pengguna baru yang akan ditambahkan.</em></p>
+        <pre><code>{
+  "username": "johndoe123",
+  "password": "JohndoeEE23"
+}</code></pre>
+        <p><strong>Responses:</strong></p>
+        <p>200: Login Berhasil!</p>
+        <pre><code>{
+  "full_name": "John Doe",
+  "email": "johndoe@example.com",
+  "phone_number": "08223456766567"
+}</code></pre>
+        <p>400: Bad Request</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /users/{id}</h2>
+        <p class="summary">Get User By ID</p>
+        <p><strong>Parameters:</strong> <code>id</code> (string) - ID user</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: User ditemukan.</p>
+        <pre><code>{
+  "full_name": "John Doe",
+  "email": "johndoe@example.com",
+  "phone_number": "08223456766567"
+}</code></pre>
+        <p>404: User tidak ditemukan</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /bank-accounts</h2>
+        <p class="summary">Get Account Bank</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: Daftar pengguna berhasil diambil.</p>
+        <pre><code>[
+  {
+    "owner_name": "John Doe",
+    "account_number": "8923445590",
+    "type": "Tabunganku",
+    "balance": 5450567
+  }
+]</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /bank-accounts/{user_id}</h2>
+        <p class="summary">Get Account Bank By User ID</p>
+        <p><strong>Parameters:</strong> <code>user_id</code> (string) - ID user</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: Bank Account ditemukan.</p>
+        <pre><code>{
+  "owner_name": "John Doe",
+  "account_number": "8923445590",
+  "type": "Tabunganku",
+  "balance": 5450567
+}</code></pre>
+        <p>404: Bank Account tidak ditemukan</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /bank-accounts/{account_number}</h2>
+        <p class="summary">Get Account Bank By Account Number</p>
+        <p><strong>Parameters:</strong> <code>account_number</code> (string) - Nomor rekening</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: Bank Account ditemukan.</p>
+        <pre><code>{
+  "owner_name": "John Doe",
+  "account_number": "8923445590",
+  "type": "Tabunganku",
+  "balance": 5450567
+}</code></pre>
+        <p>404: Bank Account tidak ditemukan</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>POST /transaction</h2>
+        <p class="summary">Transfer</p>
+        <p><strong>Request Body:</strong> <em>Data transaksi ditambahkan</em></p>
+        <pre><code>{
+  "rekening_sumber": "8923445590",
+  "rekening_tujuan": "8923445589",
+  "amount": 540000,
+  "transaction_date": "2024-07-12 08:26:37",
+  "note": "Uang kos",
+  "is_saved": false
+}</code></pre>
+        <p><strong>Responses:</strong></p>
+        <p>200: Transaksi Berhasil!</p>
+        <pre><code>{
+  "rekening_sumber": "8923445590",
+  "rekening_tujuan": "8923445589",
+  "amount": 540000,
+  "transaction_date": "2024-07-12 08:26:37",
+  "note": "Uang kos"
+}</code></pre>
+        <p>400: Bad Request</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /transaction/{transaction_id}</h2>
+        <p class="summary">Get Transaction By Transaction ID</p>
+        <p><strong>Parameters:</strong> <code>transaction_id</code> (string) - ID transaksi</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: Transaksi ditemukan.</p>
+        <pre><code>{
+  "rekening_sumber": "8923445590",
+  "rekening_tujuan": "8923445589",
+  "amount": 540000,
+  "transaction_date": "2024-07-12 08:26:37",
+  "note": "Uang kos"
+}</code></pre>
+        <p>404: Bank Account tidak ditemukan</p>
+    </div>
+
+    <div class="endpoint">
+        <h2>GET /saved-accounts</h2>
+        <p class="summary">Mendapatkan daftar semua bank account yang disimpan</p>
+        <p><strong>Responses:</strong></p>
+        <p>200: Data berhasil diambil.</p>
+        <pre><code>[
+  {
+    "owner_name": "John Doe",
+    "account_number": "8923445590"
+  }
+]</code></pre>
+    </div>
+</div>
+</body>
+</html>

@@ -30,18 +30,6 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.success(authService.login(request), "Success Login User"));
     }
 
-    @PostMapping("/login/google")
-    public ResponseEntity<?> loginWithGoogle(@RequestParam MultiValueMap<String, String> parameters) throws IOException {
-        return ResponseEntity.ok(BaseResponse.success(authService.signWithGoogle(parameters), "Success Sign Google"));
-    }
-
-    @PostMapping("/register/google")
-    public ResponseEntity<?> registerWithGoogle(@RequestBody RegisterRequest request) {
-        authService.register(request);
-        Object res = authService.sendEmailOtp(new EmailRequest(request.getEmailAddress()), "Register");
-        return ResponseEntity.ok(BaseResponse.success(res, "Success Register by Google"));
-    }
-
     @PostMapping("/otp")
     public ResponseEntity<?> sendEmailOtp(@RequestBody EmailRequest req) {
         return ResponseEntity.ok(BaseResponse.success(authService.sendEmailOtp(req, "Register"), "Success Send OTP"));
