@@ -23,5 +23,4 @@ public interface AuthService {
 
     User getCurrentUser(Principal principal);
 
-    Object signWithGoogle(MultiValueMap<String, String> parameters) throws IOException;
 }
