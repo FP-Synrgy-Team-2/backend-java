@@ -18,5 +18,4 @@ public class JangkauApplication {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-
 }
