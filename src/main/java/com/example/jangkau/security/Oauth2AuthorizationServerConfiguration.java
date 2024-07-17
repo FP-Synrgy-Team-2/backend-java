@@ -54,9 +54,6 @@ public class Oauth2AuthorizationServerConfiguration extends AuthorizationServerC
         clients.withClientDetails(clientDetailsService);
     }
 
-    /**
-     * Change user details etc.
-     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
