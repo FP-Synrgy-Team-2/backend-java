@@ -74,6 +74,9 @@ public class AccountServiceImpl implements AccountService {
     public void createAccount(User user, String ownerName, Integer pin, @Nullable Double balance) {
         User oldUser = userRepository.findByUsername(user.getUsername());
         Account oldAccount = accountRepository.findByUser(oldUser).orElse(null);
+        if (null == oldUser) {
+            userRepository.save(user);
+        }
         if (null == oldAccount) {
             oldAccount = Account.builder()
                     .user(user)
@@ -83,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
             if (balance != null) oldAccount.setBalance(balance);
             else oldAccount.setBalance(0.0);
             accountRepository.save(oldAccount);
-        }
+        } else throw new RuntimeException("Account already exists, you cannot create another account");
     }
 
     @Override

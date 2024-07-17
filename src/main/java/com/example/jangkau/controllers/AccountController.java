@@ -1,8 +1,6 @@
 package com.example.jangkau.controllers;
 
-import com.example.jangkau.dto.AccountResponseDTO;
-import com.example.jangkau.dto.PinValidationDTO;
-import com.example.jangkau.dto.TransactionsRequestDTO;
+import com.example.jangkau.dto.*;
 import com.example.jangkau.dto.auth.EmailRequest;
 import com.example.jangkau.dto.base.BaseResponse;
 import com.example.jangkau.models.Account;
@@ -13,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +34,8 @@ public class AccountController {
     AccountService accountService;
 
     @Autowired ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getAllBankAccounts() {
@@ -83,10 +84,22 @@ public class AccountController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createAccount(@RequestBody User user, String ownerName, Integer pin, Double balance) {
-        
-        accountService.createAccount(user, ownerName, 900938, balance);
-        return null;
+    public ResponseEntity<?> createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
+        User user = modelMapper.map(createAccountRequest.getUserRequest(), User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String ownerName = createAccountRequest.getOwnerName();
+        Integer pin = createAccountRequest.getPin();
+        Double balance = createAccountRequest.getBalance();
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", user);
+        data.put("ownerName", ownerName);
+        data.put("balance", balance);
+        try {
+            accountService.createAccount(user, ownerName, pin, balance);
+            return ResponseEntity.ok(BaseResponse.success(data, "Account successfully created"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(BaseResponse.failure(409, e.getMessage()));
+        }
     }
     
 }
