@@ -1,6 +1,7 @@
 package com.example.jangkau.services;
 
 import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.PinValidationDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
@@ -20,5 +21,7 @@ public interface AccountService {
 
     void updateBalance(Transactions transactions);
 
-    void createAccount(User user, String ownerName, int pin, @Nullable Double balance);
+    void createAccount(User user, String ownerName, Integer pin, @Nullable Double balance);
+
+    AccountResponseDTO pinValidation(PinValidationDTO pinValidationDTO);
 }
