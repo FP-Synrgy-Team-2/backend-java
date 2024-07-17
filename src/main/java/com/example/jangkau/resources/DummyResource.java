@@ -10,7 +10,7 @@ public class DummyResource {
     static String[] ACCOUNTS_OWNER_NAME = new String[] {
             "Full Name Admin", "Full Name User"
     };
-    static Integer[] ACCOUNTS_PIN = new Integer[] {
+    static int[] ACCOUNTS_PIN = new int[] {
             123456,135797
     };
 }
