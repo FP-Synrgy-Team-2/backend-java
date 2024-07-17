@@ -1,10 +1,7 @@
 package com.example.jangkau.mapper;
 
 import com.example.jangkau.dto.TransactionsResponseDTO;
-import com.example.jangkau.dto.UserResponse;
-import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
-import com.example.jangkau.models.User;
 import org.springframework.stereotype.Component;
 
 @Component

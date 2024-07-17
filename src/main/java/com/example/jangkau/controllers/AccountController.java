@@ -1,7 +1,12 @@
 package com.example.jangkau.controllers;
 
 import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.PinValidationDTO;
+import com.example.jangkau.dto.TransactionsRequestDTO;
+import com.example.jangkau.dto.auth.EmailRequest;
+import com.example.jangkau.dto.base.BaseResponse;
 import com.example.jangkau.models.Account;
+import com.example.jangkau.models.User;
 import com.example.jangkau.services.AccountService;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 @RestController
 @RequestMapping("/bank-accounts")
@@ -68,14 +77,16 @@ public class AccountController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    @GetMapping("/saved-accounts/{account_id}")
-    public ResponseEntity<List<AccountResponseDTO>> getSavedAccounts(@PathVariable("account_id") UUID account_id){
-        List<Account> savedAccounts = accountService.getSavedAccount(account_id);
-        List<AccountResponseDTO> savedAccountsList = savedAccounts
-                .stream()
-                .map(account -> modelMapper.map(account, AccountResponseDTO.class))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(savedAccountsList, HttpStatus.OK);
-
+    @PostMapping("/pin-validation")
+    public ResponseEntity<?> pinValidation(@RequestBody PinValidationDTO pinValidationDTO) {
+        return ResponseEntity.ok(BaseResponse.success(accountService.pinValidation(pinValidationDTO), "PIN Validation Success"));
     }
+
+    @PostMapping()
+    public ResponseEntity<?> createAccount(@RequestBody User user, String ownerName, Integer pin, Double balance) {
+        
+        accountService.createAccount(user, ownerName, 900938, balance);
+        return null;
+    }
+    
 }

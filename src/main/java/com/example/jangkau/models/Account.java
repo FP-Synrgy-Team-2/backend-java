@@ -38,6 +38,12 @@ public class Account extends BaseDate {
 
     @Column(name = "owner_name")
     private String ownerName;
+    
+    @OneToMany(mappedBy = "account_id", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsFrom;
+
+    @OneToMany(mappedBy = "beneficiary_account", cascade = CascadeType.ALL)
+    private List<Transactions> transactionsTo;
 
     private String pin;
 
@@ -51,9 +57,4 @@ public class Account extends BaseDate {
     public void setPin(Integer pin, PasswordEncoder passwordEncoder) {
         this.pin = passwordEncoder.encode(pin.toString());
     }
-    @OneToMany(mappedBy = "account_id", cascade = CascadeType.ALL)
-    private List<Transactions> transactionsFrom;
-
-    @OneToMany(mappedBy = "beneficiary_account", cascade = CascadeType.ALL)
-    private List<Transactions> transactionsTo;
 }
