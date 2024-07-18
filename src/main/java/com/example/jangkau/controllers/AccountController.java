@@ -100,7 +100,7 @@ public class AccountController {
         Integer pin = createAccountRequest.getPin();
         Double balance = createAccountRequest.getBalance();
         try {
-            CreateAccountResponse createAccountResponse = accountService.createAccount(createAccountRequest.getUsername(), ownerName, pin, balance);
+            CreateAccountResponse createAccountResponse = accountService.createAccount(createAccountRequest.getUsername(), createAccountRequest.getPassword(), ownerName, pin, balance);
             return ResponseEntity.ok(BaseResponse.success(createAccountResponse, "Account successfully created"));
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());

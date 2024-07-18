@@ -20,7 +20,7 @@ public interface AccountService {
 
     void updateBalance(Transactions transactions);
 
-    CreateAccountResponse createAccount(String username, String ownerName, Integer pin, @Nullable Double balance);
+    CreateAccountResponse createAccount(String username, String password, String ownerName, Integer pin, @Nullable Double balance);
 
     AccountResponseDTO pinValidation(PinValidationDTO pinValidationDTO);
 
