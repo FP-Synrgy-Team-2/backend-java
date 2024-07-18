@@ -45,6 +45,9 @@ public class Account extends BaseDate {
     @OneToMany(mappedBy = "beneficiaryAccount", cascade = CascadeType.ALL)
     private List<Transactions> transactionsTo;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<SavedAccounts> savedAccounts;
+
     private String pin;
 
     @PrePersist

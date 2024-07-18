@@ -28,7 +28,7 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
             "/transactions",
             "/transactions/**",
             "/bank-accounts",
-            "/bank-accounts/saved-accounts/**"
+            "/saved-accounts/**"
     };
 
     /**

@@ -52,10 +52,6 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-    @Override
-    public List<Account> getSavedAccount(UUID user_id) {
-        return transactionRepository.findSavedAccounts(user_id);
-    }
 
     @Override
     public void updateBalance(Transactions transactions) {
@@ -96,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByAccountNumber(pinValidationDTO.getAccountNumber())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
 
-            if (!(encoder.matches(pinValidationDTO.getPin(), account.getPin()))) {
+            if (!(encoder.matches(pinValidationDTO.getPin().toString(), account.getPin()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect PIN");
             }
 
@@ -104,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
-                .owner_name(account.getOwnerName())
+                .ownerName(account.getOwnerName())
                 .build();
             return response;
         } catch (ResponseStatusException e) {
