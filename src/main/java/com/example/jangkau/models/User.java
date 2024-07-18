@@ -80,6 +80,9 @@ public class User extends BaseDate implements UserDetails {
     )
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<SavedAccounts> savedAccounts;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;

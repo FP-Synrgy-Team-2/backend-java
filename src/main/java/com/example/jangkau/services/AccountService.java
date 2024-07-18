@@ -17,8 +17,6 @@ public interface AccountService {
 
     Account getAccountByAccountNumber(String accountNumber);
 
-    List<Account> getSavedAccount(UUID user_id);
-
     void updateBalance(Transactions transactions);
 
     void createAccount(User user, String ownerName, Integer pin, @Nullable Double balance);

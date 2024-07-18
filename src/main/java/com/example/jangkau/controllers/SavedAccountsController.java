@@ -1,8 +1,11 @@
 package com.example.jangkau.controllers;
 
 import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.SavedAccountResponseDTO;
 import com.example.jangkau.models.Account;
+import com.example.jangkau.models.SavedAccounts;
 import com.example.jangkau.services.AccountService;
+import com.example.jangkau.services.SavedAccountService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +16,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/saved-accounts")
 public class SavedAccountsController {
-    @Autowired
-    AccountService accountService;
+    @Autowired SavedAccountService savedAccountService;
 
     @Autowired ModelMapper modelMapper;
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<List<AccountResponseDTO>> getSavedAccounts(@PathVariable("user_id") UUID account_id){
-        List<Account> savedAccounts = accountService.getSavedAccount(account_id);
-        List<AccountResponseDTO> savedAccountsList = savedAccounts
+    public ResponseEntity<Map<String, Object>> getSavedAccounts(@PathVariable("user_id") UUID userId){
+        Map<String, Object> response = new HashMap<>();
+        List<SavedAccounts> savedAccounts = savedAccountService.getAllSavedAccount(userId);
+        List<SavedAccountResponseDTO> savedAccountsList = savedAccounts
                 .stream()
-                .map(account -> modelMapper.map(account, AccountResponseDTO.class))
+                .map(account -> modelMapper.map(account, SavedAccountResponseDTO.class))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(savedAccountsList, HttpStatus.OK);
-
+        response.put("status", "suscces");
+        response.put("data", savedAccountsList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
