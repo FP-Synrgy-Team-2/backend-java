@@ -31,28 +31,28 @@ public class Transactions extends BaseDate{
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
-    private UUID transaction_id;
+    private UUID transactionId;
 
     @Column(nullable = false)
     private double amount;
 
-    private double admin_fee = 0;
+    private double adminFee = 0;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "transaction_date", updatable = false)
+    @Column(name = "transactionDate", updatable = false)
     @CreatedDate
-    private Date transaction_date;
+    private Date transactionDate;
 
     private String note;
     
-    private boolean is_saved;
+    private boolean isSaved;
 
     @ManyToOne(targetEntity = Account.class)
-    @JoinColumn(name = "account_id")
-    private Account account_id;
+    @JoinColumn(name = "accountId")
+    private Account accountId;
 
     @ManyToOne(targetEntity = Account.class)
-    @JoinColumn(name = "beneficiary_account")
-    private Account beneficiary_account;
+    @JoinColumn(name = "beneficiaryAccount")
+    private Account beneficiaryAccount;
 
 }

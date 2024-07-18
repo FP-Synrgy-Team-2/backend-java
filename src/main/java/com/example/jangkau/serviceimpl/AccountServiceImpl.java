@@ -53,17 +53,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getSavedAccount(UUID account_id) {
-        return transactionRepository.findSavedAccounts(account_id);
+    public List<Account> getSavedAccount(UUID user_id) {
+        return transactionRepository.findSavedAccounts(user_id);
     }
 
     @Override
     public void updateBalance(Transactions transactions) {
 
-        Account source = accountRepository.findByAccountNumber(transactions.getAccount_id().getAccountNumber()).orElse(null);
-        Account beneficiary = accountRepository.findByAccountNumber(transactions.getBeneficiary_account().getAccountNumber()).orElse(null);
+        Account source = accountRepository.findByAccountNumber(transactions.getAccountId().getAccountNumber()).orElse(null);
+        Account beneficiary = accountRepository.findByAccountNumber(transactions.getBeneficiaryAccount().getAccountNumber()).orElse(null);
 
-        source.setBalance(source.getBalance() - (transactions.getAmount() + transactions.getAdmin_fee()));
+        source.setBalance(source.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
         beneficiary.setBalance(beneficiary.getBalance() + transactions.getAmount());
         
         accountRepository.save(source);

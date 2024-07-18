@@ -35,11 +35,11 @@ public class TransactionController {
         Map<String, Object> response = new HashMap<>();
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
         if (newTransaction != null) {
-            Account account_id = accountService.getAccountById(newTransaction.getAccount_id().toString());
-            Account beneficiary = accountService.getAccountById(newTransaction.getBeneficiary_account().toString());
+            Account accountId = accountService.getAccountById(newTransaction.getAccountId().toString());
+            Account beneficiary = accountService.getAccountById(newTransaction.getBeneficiaryAccount().toString());
             Transactions trans = modelMapper.map(newTransaction, Transactions.class);
-            trans.setAccount_id(account_id);
-            trans.setBeneficiary_account(beneficiary);
+            trans.setAccountId(accountId);
+            trans.setBeneficiaryAccount(beneficiary);
             accountService.updateBalance(trans);
         }
         response.put("status", "suscces");

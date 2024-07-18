@@ -26,8 +26,8 @@ public class SavedAccountsController {
 
     @Autowired ModelMapper modelMapper;
 
-    @GetMapping("/{account_id}")
-    public ResponseEntity<List<AccountResponseDTO>> getSavedAccounts(@PathVariable("account_id") UUID account_id){
+    @GetMapping("/{user_id}")
+    public ResponseEntity<List<AccountResponseDTO>> getSavedAccounts(@PathVariable("user_id") UUID account_id){
         List<Account> savedAccounts = accountService.getSavedAccount(account_id);
         List<AccountResponseDTO> savedAccountsList = savedAccounts
                 .stream()

@@ -11,16 +11,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class TransactionsResponseDTO {
-    private UUID transaction_id;
-    private UUID account_id;
-    private UUID beneficiary_account;
+    private UUID transactionId;
+    private UUID accountId;
+    private UUID beneficiaryAccount;
     private double amount;
-    private Date transaction_date;
+    private Date transactionDate;
     private String note;
-    private double admin_fee;
+    private double adminFee;
     private double total;
 }

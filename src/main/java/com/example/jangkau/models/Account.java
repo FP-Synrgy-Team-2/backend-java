@@ -39,10 +39,10 @@ public class Account extends BaseDate {
     @Column(name = "owner_name")
     private String ownerName;
     
-    @OneToMany(mappedBy = "account_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
     private List<Transactions> transactionsFrom;
 
-    @OneToMany(mappedBy = "beneficiary_account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "beneficiaryAccount", cascade = CascadeType.ALL)
     private List<Transactions> transactionsTo;
 
     private String pin;
