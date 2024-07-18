@@ -99,9 +99,14 @@ public class AccountController {
         String ownerName = createAccountRequest.getOwnerName();
         Integer pin = createAccountRequest.getPin();
         Double balance = createAccountRequest.getBalance();
+        Map<String, Object> response = new HashMap<>();
         try {
-            CreateAccountResponse createAccountResponse = accountService.createAccount(createAccountRequest.getUsername(), createAccountRequest.getPassword(), ownerName, pin, balance);
-            return ResponseEntity.ok(BaseResponse.success(createAccountResponse, "Account successfully created"));
+            Account account = accountService.createAccount(createAccountRequest.getUsername(), createAccountRequest.getPassword(), ownerName, pin, balance);
+            response.put("account_id", account.getId());
+            response.put("owner_name", account.getOwnerName());
+            response.put("account_number", account.getAccountNumber());
+            response.put("balance", account.getBalance());
+            return ResponseEntity.ok(BaseResponse.success(response, "Account successfully created"));
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         } catch (RuntimeException e) {
