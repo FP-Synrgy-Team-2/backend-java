@@ -163,7 +163,7 @@ public class DatabaseSeeder implements ApplicationRunner {
             }
 
             userRepository.save(oldUser);
-            insertAccounts(oldUser, oldUser.getFullName(), i);
+            //insertAccounts(oldUser, oldUser.getFullName(), i);
             i++;
         }
     }

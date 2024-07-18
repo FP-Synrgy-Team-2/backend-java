@@ -1,6 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
 import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.CreateAccountResponse;
 import com.example.jangkau.dto.PinValidationDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
@@ -12,8 +13,10 @@ import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.resources.DummyResource;
 import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.UserService;
+import com.example.jangkau.services.ValidPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -67,12 +70,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void createAccount(User user, String ownerName, Integer pin, @Nullable Double balance) {
-        User oldUser = userRepository.findByUsername(user.getUsername());
-        Account oldAccount = accountRepository.findByUser(oldUser).orElse(null);
-        if (null == oldUser) {
-            userRepository.save(user);
-        }
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public CreateAccountResponse createAccount(String username, String ownerName, Integer pin, @Nullable Double balance) {
+        User user = userRepository.findByUsername(username);
+        Account oldAccount = accountRepository.findByUser(user).orElse(null);
+        if (null == user) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
         if (null == oldAccount) {
             oldAccount = Account.builder()
                     .user(user)
@@ -81,7 +83,8 @@ public class AccountServiceImpl implements AccountService {
             oldAccount.setPin(pin, passwordEncoder);
             if (balance != null) oldAccount.setBalance(balance);
             else oldAccount.setBalance(0.0);
-            accountRepository.save(oldAccount);
+            Account account = accountRepository.save(oldAccount);
+            return new CreateAccountResponse(account.getAccountNumber(), user.getUsername(), account.getOwnerName(), account.getBalance());
         } else throw new RuntimeException("Account already exists, you cannot create another account");
     }
 

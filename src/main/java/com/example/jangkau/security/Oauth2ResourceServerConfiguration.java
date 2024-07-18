@@ -56,7 +56,6 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .antMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/users").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/users").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.POST, "/bank-accounts").permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
