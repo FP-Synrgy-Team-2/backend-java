@@ -75,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @PreAuthorize("hasRole('ROLE_USER')")
-    public CreateAccountResponse createAccount(String username, String password, String ownerName, Integer pin, @Nullable Double balance) {
+    public Account createAccount(String username, String password, String ownerName, Integer pin, @Nullable Double balance) {
         User user = userRepository.findByUsername(username);
         Account oldAccount = accountRepository.findByUser(user).orElse(null);
         if (null == user) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
@@ -89,7 +89,7 @@ public class AccountServiceImpl implements AccountService {
             else oldAccount.setBalance(0.0);
             if (passwordEncoder.matches(password, user.getPassword())) {
                 Account account = accountRepository.save(oldAccount);
-                return new CreateAccountResponse(account.getAccountNumber(), user.getUsername(), account.getOwnerName(), account.getBalance());
+                return account;
             } else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "password is incorrect");
         } else throw new RuntimeException("Account already exists, you cannot create another account");
     }
