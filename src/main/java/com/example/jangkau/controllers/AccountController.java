@@ -58,35 +58,45 @@ public class AccountController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/user/{user_id}")
     public ResponseEntity<Map<String, Object>> getBankAccount(@PathVariable("user_id") String id) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountById(id);
         HttpStatus httpStatus;
+        Map<String, Object> data = new HashMap<>();
         if (account != null) {
             response.put("message", "Account successfully retrieved.");
+            data.put("account_id", account.getId());
+            data.put("owner_name", account.getOwnerName());
+            data.put("account_number", account.getAccountNumber());
+            data.put("balance", account.getBalance());
             httpStatus = HttpStatus.OK;
         } else {
             response.put("message", "Account not found.");
             httpStatus = HttpStatus.NOT_FOUND;
         }
-        response.put("data", account);
+        response.put("data", data);
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    @GetMapping("/{account_number}")
+    @GetMapping("/account/{account_number}")
     public ResponseEntity<Map<String, Object>> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         HttpStatus httpStatus;
+        Map<String, Object> data = new HashMap<>();
         if (account != null) {
             response.put("message", "Account successfully retrieved.");
+            data.put("account_id", account.getId());
+            data.put("owner_name", account.getOwnerName());
+            data.put("account_number", account.getAccountNumber());
+            data.put("balance", account.getBalance());
             httpStatus = HttpStatus.OK;
         } else {
             response.put("message", "Account not found.");
             httpStatus = HttpStatus.NOT_FOUND;
         }
-        response.put("data", account);
+        response.put("data", data);
         return new ResponseEntity<>(response, httpStatus);
     }
 
