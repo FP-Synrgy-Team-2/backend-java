@@ -13,6 +13,8 @@ import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.SavedAccountService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class SavedAccountServiceImpl implements SavedAccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired UserRepository userRepository;
     @Autowired SavedAccountMapper savedAccountMapper;
+
+     private static final Logger logger = LoggerFactory.getLogger(SavedAccountServiceImpl.class);
 
     @Override
     public List<SavedAccounts> getAllSavedAccount(UUID userId) {
@@ -49,14 +53,20 @@ public class SavedAccountServiceImpl implements SavedAccountService {
             SavedAccounts savedAccounts = savedAccountRepository.findSavedAccountsByUserIdAndAccountId(savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
 
             if (savedAccounts != null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already Exist");
+                logger.error("Saved account with userId {} and accountId {} already exists", savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
             }
             
             Account account = accountRepository.findById(savedAccountRequestDTO.getAccountId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bank Account Not Found"));
+                .orElse(null);
+            if (account == null) {
+                logger.error("Bank account with accountId {} not found", savedAccountRequestDTO.getAccountId());
+            }
             
             User user = userRepository.findById(savedAccountRequestDTO.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Not Found"));
+                .orElse(null);
+            if (user == null) {
+                logger.error("User with userId {} not found", savedAccountRequestDTO.getUserId());
+            }
 
             SavedAccounts newSavedAccounts = SavedAccounts.builder()
                 .account(account)
@@ -66,9 +76,7 @@ public class SavedAccountServiceImpl implements SavedAccountService {
             savedAccountRepository.save(newSavedAccounts);
             newSavedAccounts.setId(newSavedAccounts.getId());
             return savedAccountMapper.toSavedAccountResponse(newSavedAccounts);
-            
-        } catch (ResponseStatusException e) {
-            throw e; 
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }

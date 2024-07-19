@@ -36,7 +36,6 @@ public class TransactionController {
 
 
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody TransactionsRequestDTO transactionsRequestDTO){
         Map<String, Object> response = new HashMap<>();
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
@@ -63,8 +62,7 @@ public class TransactionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/status/{transaction_id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/{transaction_id}")
     public ResponseEntity<Map<String, Object>> getTransactionStatus(@PathVariable("transaction_id") String transactionId){
         Map<String, Object> response = new HashMap<>();
 
