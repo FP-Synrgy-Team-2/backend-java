@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
     public TransactionsResponseDTO toTransactionResponse(Transactions transactions) {
         return TransactionsResponseDTO.builder()
-                .transaction_id(transactions.getTransaction_id())
-                .account_id(transactions.getAccount_id().getId())
-                .beneficiary_account(transactions.getBeneficiary_account().getId())
+                .transactionId(transactions.getTransactionId())
+                .accountId(transactions.getAccountId().getId())
+                .beneficiaryAccount(transactions.getBeneficiaryAccount().getId())
                 .amount(transactions.getAmount())
-                .admin_fee(transactions.getAdmin_fee())
-                .transaction_date(transactions.getTransaction_date())
+                .adminFee(transactions.getAdminFee())
+                .transactionDate(transactions.getTransactionDate())
                 .note(transactions.getNote())
-                .total(transactions.getAmount() + transactions.getAdmin_fee())
+                .total(transactions.getAmount() + transactions.getAdminFee())
                 .build();
     }
 

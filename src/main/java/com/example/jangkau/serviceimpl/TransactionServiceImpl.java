@@ -40,30 +40,26 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO) {
         try {
-            Account account = accountRepository.findById(transactionsRequestDTO.getAccount_id())
+            Account account = accountRepository.findById(transactionsRequestDTO.getAccountId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
 
-            Account beneficiaryAccount = accountRepository.findById(transactionsRequestDTO.getBeneficiary_account())
+            Account beneficiaryAccount = accountRepository.findById(transactionsRequestDTO.getBeneficiaryAccount())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Beneficiary account not found"));
 
             
-            if (transactionsRequestDTO.getAmount() < 10000) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum amount Rp. 10000");
-            }else if (account.getBalance() == 50000) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your balance has reached the limit");
-            }else if (account.getBalance() - transactionsRequestDTO.getAmount() < 50000) {
+            if (account.getBalance() < transactionsRequestDTO.getAmount()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
             }
             Transactions newTransaction = Transactions.builder()
-                .account_id(account)
-                .beneficiary_account(beneficiaryAccount)
+                .accountId(account)
+                .beneficiaryAccount(beneficiaryAccount)
                 .amount(transactionsRequestDTO.getAmount())
-                .transaction_date(transactionsRequestDTO.getTransaction_date())
+                .transactionDate(transactionsRequestDTO.getTransactionDate())
                 .note(transactionsRequestDTO.getNote())
-                .is_saved(transactionsRequestDTO.is_saved())
+                .isSaved(transactionsRequestDTO.isSaved())
                 .build();
             transactionRepository.save(newTransaction);
-            newTransaction.setTransaction_id(newTransaction.getTransaction_id());
+            newTransaction.setTransactionId(newTransaction.getTransactionId());
             return transactionMapper.toTransactionResponse(newTransaction);
         } catch (ResponseStatusException e) {
             throw e; 

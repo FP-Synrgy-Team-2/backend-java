@@ -11,15 +11,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class TransactionsRequestDTO {
-    private UUID account_id;
-    private UUID beneficiary_account;
+    private UUID accountId;
+    private UUID beneficiaryAccount;
     private double amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Date transaction_date;
+    private Date transactionDate;
     private String note;
-    private boolean is_saved;
+    private boolean isSaved;
 }
  

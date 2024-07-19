@@ -4,16 +4,20 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 public class CreateAccountRequest {
-    private UserRequest userRequest;
+
+    private String username;
+
+    private String password;
 
     private String ownerName;
 
     private Integer pin;
 
-    @Nullable
     private Double balance;
 }

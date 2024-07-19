@@ -1,6 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
 import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.CreateAccountResponse;
 import com.example.jangkau.dto.PinValidationDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
@@ -12,8 +13,10 @@ import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.resources.DummyResource;
 import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.UserService;
+import com.example.jangkau.services.ValidPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,18 +55,14 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-    @Override
-    public List<Account> getSavedAccount(UUID account_id) {
-        return transactionRepository.findSavedAccounts(account_id);
-    }
 
     @Override
     public void updateBalance(Transactions transactions) {
 
-        Account source = accountRepository.findByAccountNumber(transactions.getAccount_id().getAccountNumber()).orElse(null);
-        Account beneficiary = accountRepository.findByAccountNumber(transactions.getBeneficiary_account().getAccountNumber()).orElse(null);
+        Account source = accountRepository.findByAccountNumber(transactions.getAccountId().getAccountNumber()).orElse(null);
+        Account beneficiary = accountRepository.findByAccountNumber(transactions.getBeneficiaryAccount().getAccountNumber()).orElse(null);
 
-        source.setBalance(source.getBalance() - (transactions.getAmount() + transactions.getAdmin_fee()));
+        source.setBalance(source.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
         beneficiary.setBalance(beneficiary.getBalance() + transactions.getAmount());
         
         accountRepository.save(source);
@@ -71,12 +70,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void createAccount(User user, String ownerName, Integer pin, @Nullable Double balance) {
-        User oldUser = userRepository.findByUsername(user.getUsername());
-        Account oldAccount = accountRepository.findByUser(oldUser).orElse(null);
-        if (null == oldUser) {
-            userRepository.save(user);
-        }
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public Account createAccount(String username, String password, String ownerName, Integer pin, @Nullable Double balance) {
+        User user = userRepository.findByUsername(username);
+        Account oldAccount = accountRepository.findByUser(user).orElse(null);
+        if (null == user) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
         if (null == oldAccount) {
             oldAccount = Account.builder()
                     .user(user)
@@ -85,7 +83,10 @@ public class AccountServiceImpl implements AccountService {
             oldAccount.setPin(pin, passwordEncoder);
             if (balance != null) oldAccount.setBalance(balance);
             else oldAccount.setBalance(0.0);
-            accountRepository.save(oldAccount);
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                Account account = accountRepository.save(oldAccount);
+                return account;
+            } else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "password is incorrect");
         } else throw new RuntimeException("Account already exists, you cannot create another account");
     }
 
@@ -96,15 +97,15 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByAccountNumber(pinValidationDTO.getAccountNumber())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
 
-            if (!(encoder.matches(pinValidationDTO.getPin(), account.getPin()))) {
+            if (!(encoder.matches(pinValidationDTO.getPin().toString(), account.getPin()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect PIN");
             }
 
             AccountResponseDTO response = AccountResponseDTO.builder()
-                .id(account.getId())
+                .userId(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
-                .owner_name(account.getOwnerName())
+                .ownerName(account.getOwnerName())
                 .build();
             return response;
         } catch (ResponseStatusException e) {

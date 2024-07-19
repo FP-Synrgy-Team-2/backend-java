@@ -11,12 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.jangkau.dto.SavedAccountRequestDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
+import com.example.jangkau.dto.UserResponse;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.services.AccountService;
+import com.example.jangkau.services.SavedAccountService;
 import com.example.jangkau.services.TransactionService;
+import com.example.jangkau.services.UserService;
 
 
 
@@ -27,6 +31,8 @@ public class TransactionController {
     @Autowired TransactionService transactionService;
     @Autowired AccountService accountService;
     @Autowired ModelMapper modelMapper;
+    @Autowired SavedAccountService savedAccountService;
+    @Autowired UserService userService;
 
 
     @PostMapping()
@@ -35,16 +41,25 @@ public class TransactionController {
         Map<String, Object> response = new HashMap<>();
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
         if (newTransaction != null) {
-            Account account_id = accountService.getAccountById(newTransaction.getAccount_id().toString());
-            Account beneficiary = accountService.getAccountById(newTransaction.getBeneficiary_account().toString());
+            Account accountId = accountService.getAccountById(newTransaction.getAccountId().toString());
+            Account beneficiary = accountService.getAccountById(newTransaction.getBeneficiaryAccount().toString());
             Transactions trans = modelMapper.map(newTransaction, Transactions.class);
-            trans.setAccount_id(account_id);
-            trans.setBeneficiary_account(beneficiary);
+            trans.setAccountId(accountId);
+            trans.setBeneficiaryAccount(beneficiary);
             accountService.updateBalance(trans);
+            if (transactionsRequestDTO.isSaved()) {
+                Account account = accountService.getAccountById(transactionsRequestDTO.getBeneficiaryAccount().toString());
+                Account userAccount = accountService.getAccountById(transactionsRequestDTO.getAccountId().toString());
+                UserResponse user = userService.findById(userAccount.getUser().getId());
+                SavedAccountRequestDTO request = SavedAccountRequestDTO.builder()
+                    .accountId(account.getId())
+                    .userId(user.getId())
+                    .build();
+                savedAccountService.createSavedAccount(request);
+            }
         }
-        response.put("status", "suscces");
+        response.put("status", "success");
         response.put("data", newTransaction);
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
