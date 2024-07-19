@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class AccountResponseDTO {
-    private UUID id;
+    private UUID userId;
     private String ownerName;
     private String accountNumber;
     private double balance;

@@ -16,7 +16,7 @@ public class TransactionsRequestDTO {
     private UUID beneficiaryAccount;
     private double amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private Date transaction_date;
+    private Date transactionDate;
     private String note;
     private boolean isSaved;
 }

@@ -54,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService{
                 .accountId(account)
                 .beneficiaryAccount(beneficiaryAccount)
                 .amount(transactionsRequestDTO.getAmount())
-                .transactionDate(transactionsRequestDTO.getTransaction_date())
+                .transactionDate(transactionsRequestDTO.getTransactionDate())
                 .note(transactionsRequestDTO.getNote())
                 .isSaved(transactionsRequestDTO.isSaved())
                 .build();
