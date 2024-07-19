@@ -45,7 +45,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccountById(String id) {
         UUID uuid = UUID.fromString(id);
-        Account account = accountRepository.findById(uuid).orElse(null);
+        User user = userRepository.findById(uuid).orElse(null);
+        Account account = accountRepository.findByUser(user).orElse(null);
         return account;
     }
 
