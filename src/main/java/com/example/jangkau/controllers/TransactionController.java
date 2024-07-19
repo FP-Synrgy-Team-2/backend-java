@@ -63,7 +63,7 @@ public class TransactionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/status/{transaction_id}")
+    @GetMapping("/{transaction_id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Map<String, Object>> getTransactionStatus(@PathVariable("transaction_id") String transactionId){
         Map<String, Object> response = new HashMap<>();

@@ -46,6 +46,9 @@ public class TransactionServiceImpl implements TransactionService{
             Account beneficiaryAccount = accountRepository.findById(transactionsRequestDTO.getBeneficiaryAccount())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Beneficiary account not found"));
 
+            if (account.getId() == beneficiaryAccount.getId()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot make transactions to the same bank account");
+            }
             
             if (account.getBalance() < transactionsRequestDTO.getAmount()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
