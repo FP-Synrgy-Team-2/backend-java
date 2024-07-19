@@ -23,4 +23,6 @@ public interface AuthService {
 
     User getCurrentUser(Principal principal);
 
+    void logout(Principal principal);
+
 }

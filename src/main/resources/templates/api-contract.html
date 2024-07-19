@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,166 +7,292 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
             padding: 20px;
         }
-        h1, h2, h3 {
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
+
+        section {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        code {
-            background: #f4f4f4;
-            padding: 2px 5px;
+
+        h2 {
+            color: #333;
+        }
+
+        h3 {
+            color: #555;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
             border-radius: 5px;
         }
-        .endpoint {
-            margin: 20px 0;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
         }
-        .endpoint .summary {
-            font-weight: bold;
+
+        li {
+            margin-bottom: 10px;
         }
+
     </style>
 </head>
 <body>
-<div class="container">
+<header>
     <h1>API Contract - Jangkau</h1>
-    <p><strong>Base Url : https://koyeb-db-preview-app-jangkau-81ff3049.koyeb.app/api</strong></p>
-
-    <div class="endpoint">
-        <h2>POST /auth</h2>
-        <p class="summary">Login</p>
-        <p><strong>Request Body:</strong> <em>Data pengguna baru yang akan ditambahkan.</em></p>
+    <p><strong>Base Url : https://ytterbic-jean-jangkau-186370c4.koyeb.app</strong></p>
+</header>
+<main>
+    <section id="auth-login">
+        <h2>/api/auth/login</h2>
+        <h3>POST</h3>
+        <p>Summary: Melakukan login</p>
+        <p>Description: Untuk masuk ke dalam sistem</p>
+        <p>Request Body:
         <pre><code>{
   "username": "johndoe123",
   "password": "JohndoeEE23"
 }</code></pre>
-        <p><strong>Responses:</strong></p>
-        <p>200: Login Berhasil!</p>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Login Berhasil!
+                <pre><code>{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
+  "token_type": "bearer",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
+  "expires_in": 28799,
+  "scope": "read writ",
+  "jti": "frBzLJX9CQ14QG_vDEXQB20AoWw"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+
+    <section id="bank-accounts-pin-validation">
+        <h2>/api/bank-accounts/pin-validation</h2>
+        <h3>POST</h3>
+        <p>Summary: Melakukan validasi pin</p>
+        <p>Description: Data pengguna baru yang akan ditambahkan.</p>
+        <p>Request Body:
         <pre><code>{
-  "full_name": "John Doe",
-  "email": "johndoe@example.com",
+  "account_number": "8923445590",
+  "pin": "456734"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Validasi Berhasil!
+                <pre><code>{
+  "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
+  "owner_name": "John Doe",
+  "account_number": "401897694139",
+  "balance": 990876
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+
+    <section id="user-id">
+        <h2>/api/users/{id}</h2>
+        <h3>GET</h3>
+        <p>Summary: Mendapatkan informasi user berdasarkan ID</p>
+        <p>Parameters:
+        <pre><code>{
+  "id": "string"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: User ditemukan.
+                <pre><code>{
+  "user_id": "45227600-27d1-45e7-ab80-31755f5737b0",
+  "username": "johndoe123",
+  "email_address": "johndoe@example.com",
+  "fullname": "John Doe",
   "phone_number": "08223456766567"
 }</code></pre>
-        <p>400: Bad Request</p>
-    </div>
+            </li>
+            <li>404: User tidak ditemukan</li>
+        </ul>
+        </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>GET /users/{id}</h2>
-        <p class="summary">Get User By ID</p>
-        <p><strong>Parameters:</strong> <code>id</code> (string) - ID user</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: User ditemukan.</p>
-        <pre><code>{
-  "full_name": "John Doe",
-  "email": "johndoe@example.com",
-  "phone_number": "08223456766567"
-}</code></pre>
-        <p>404: User tidak ditemukan</p>
-    </div>
-
-    <div class="endpoint">
-        <h2>GET /bank-accounts</h2>
-        <p class="summary">Get Account Bank</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: Daftar pengguna berhasil diambil.</p>
-        <pre><code>[
+    <section id="bank-accounts">
+        <h2>/api/bank-accounts</h2>
+        <h3>GET</h3>
+        <p>Summary: Mendapatkan daftar semua bank account</p>
+        <p>Responses:
+        <ul>
+            <li>200: Daftar pengguna berhasil diambil.
+                <pre><code>[
   {
+    "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
     "owner_name": "John Doe",
     "account_number": "8923445590",
-    "type": "Tabunganku",
     "balance": 5450567
   }
 ]</code></pre>
-    </div>
+            </li>
+        </ul>
+        </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>GET /bank-accounts/{user_id}</h2>
-        <p class="summary">Get Account Bank By User ID</p>
-        <p><strong>Parameters:</strong> <code>user_id</code> (string) - ID user</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: Bank Account ditemukan.</p>
-        <pre><code>{
+    <section id="bank-accounts-user-id">
+        <h2>/api/bank-accounts/{user_id}</h2>
+            <p>Summary: Mendapatkan informasi bank account user berdasarkan User ID</p>
+            <p>Parameters:
+            <pre><code>{
+  "user_id": "string"
+}</code></pre>
+            </p>
+            <p>Responses:
+            <ul>
+                <li>200: Bank Account ditemukan.
+                    <pre><code>{
+  "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
   "owner_name": "John Doe",
   "account_number": "8923445590",
-  "type": "Tabunganku",
   "balance": 5450567
 }</code></pre>
-        <p>404: Bank Account tidak ditemukan</p>
-    </div>
+                </li>
+                <li>404: Bank Account tidak ditemukan</li>
+            </ul>
+            </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>GET /bank-accounts/{account_number}</h2>
-        <p class="summary">Get Account Bank By Account Number</p>
-        <p><strong>Parameters:</strong> <code>account_number</code> (string) - Nomor rekening</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: Bank Account ditemukan.</p>
+    <section id="bank-accounts-account-number">
+        <h2>/api/bank-accounts/{account_number}</h2>
+        <h3>GET</h3>
+        <p>Summary: Mendapatkan informasi bank account user berdasarkan nomor rekening</p>
+        <p>Parameters:
         <pre><code>{
+  "account_number": "string"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Bank Account ditemukan.
+                <pre><code>{
+  "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
   "owner_name": "John Doe",
   "account_number": "8923445590",
-  "type": "Tabunganku",
   "balance": 5450567
 }</code></pre>
-        <p>404: Bank Account tidak ditemukan</p>
-    </div>
+            </li>
+            <li>404: Bank Account tidak ditemukan</li>
+        </ul>
+        </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>POST /transaction</h2>
-        <p class="summary">Transfer</p>
-        <p><strong>Request Body:</strong> <em>Data transaksi ditambahkan</em></p>
+    <section id="transactions">
+        <h2>/api/transactions</h2>
+        <h3>POST</h3>
+        <p>Summary: Melakukan transfer</p>
+        <p>Request Body:
         <pre><code>{
-  "rekening_sumber": "8923445590",
-  "rekening_tujuan": "8923445589",
+  "account_id": "8923445590",
+  "beneficiary_account": "8923445589",
   "amount": 540000,
   "transaction_date": "2024-07-12 08:26:37",
   "note": "Uang kos",
-  "is_saved": false
+  "saved": false
 }</code></pre>
-        <p><strong>Responses:</strong></p>
-        <p>200: Transaksi Berhasil!</p>
-        <pre><code>{
-  "rekening_sumber": "8923445590",
-  "rekening_tujuan": "8923445589",
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Transaksi Berhasil!
+                <pre><code>{
+  "transaction_id": "47827600-27d1-45e7-ab80-31755f5737b0",
+  "account_id": "90227600-27d1-45e7-ab80-31755f5737b0",
+  "beneficiary_account": "87227600-27d1-45e7-ab80-31755f5737b0",
   "amount": 540000,
+  "admin_fee": 0,
   "transaction_date": "2024-07-12 08:26:37",
-  "note": "Uang kos"
+  "note": "Uang kos",
+  "total": 540000
 }</code></pre>
-        <p>400: Bad Request</p>
-    </div>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>GET /transaction/{transaction_id}</h2>
-        <p class="summary">Get Transaction By Transaction ID</p>
-        <p><strong>Parameters:</strong> <code>transaction_id</code> (string) - ID transaksi</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: Transaksi ditemukan.</p>
+    <section id="transaction-id">
+        <h2>/api/transaction/{transaction_id}</h2>
+        <h3>GET</h3>
+        <p>Summary: Mendapatkan informasi transaksi berdasarkan Transaction ID</p>
+        <p>Parameters:
         <pre><code>{
-  "rekening_sumber": "8923445590",
-  "rekening_tujuan": "8923445589",
-  "amount": 540000,
-  "transaction_date": "2024-07-12 08:26:37",
-  "note": "Uang kos"
+  "transaction_id": "string"
 }</code></pre>
-        <p>404: Bank Account tidak ditemukan</p>
-    </div>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Transaksi ditemukan.
+                <pre><code>{
+  "transaction_id": "47827600-27d1-45e7-ab80-31755f5737b0",
+  "account_id": "90227600-27d1-45e7-ab80-31755f5737b0",
+  "beneficiary_account": "87227600-27d1-45e7-ab80-31755f5737b0",
+  "amount": 540000,
+  "admin_fee": 0,
+  "transaction_date": "2024-07-12 08:26:37",
+  "note": "Uang kos",
+  "total": 540000
+}</code></pre>
+            </li>
+            <li>404: Transaksi tidak ditemukan</li>
+        </ul>
+        </p>
+    </section>
 
-    <div class="endpoint">
-        <h2>GET /saved-accounts</h2>
-        <p class="summary">Mendapatkan daftar semua bank account yang disimpan</p>
-        <p><strong>Responses:</strong></p>
-        <p>200: Data berhasil diambil.</p>
-        <pre><code>[
+    <section id="saved-accounts">
+        <h2>/api/saved-accounts/{account-id}</h2>
+        <h3>GET</h3>
+        <p>Summary: Mendapatkan daftar semua bank account yang disimpan</p>
+        <p>Parameters:
+        <pre><code>{
+  "account-id": "string"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Data berhasil diambil.
+                <pre><code>[
   {
+    "saved_account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
     "owner_name": "John Doe",
     "account_number": "8923445590"
   }
 ]</code></pre>
-    </div>
-</div>
+            </li>
+        </ul>
+        </p>
+    </section>
+</main>
 </body>
 </html>

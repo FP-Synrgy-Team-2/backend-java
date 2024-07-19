@@ -10,12 +10,12 @@ public class SavedAccountMapper {
 
     public SavedAccountResponseDTO toSavedAccountResponse(SavedAccounts savedAccounts){
         return SavedAccountResponseDTO.builder()
-            .savedAccountId(savedAccounts.getId())
+            .id(savedAccounts.getId())
             .ownerName(savedAccounts.getAccount().getOwnerName())
             .accountNumber(savedAccounts.getAccount().getAccountNumber())
             .build();
     }
 
-
+    
 
 }
