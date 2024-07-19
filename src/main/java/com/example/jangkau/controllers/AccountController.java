@@ -57,7 +57,7 @@ public class AccountController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/user/{user_id}")
     public ResponseEntity<Map<String, Object>> getBankAccount(@PathVariable("user_id") String id) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountById(id);
@@ -73,7 +73,7 @@ public class AccountController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    @GetMapping("/{account_number}")
+    @GetMapping("/account/{account_number}")
     public ResponseEntity<Map<String, Object>> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
         Map<String, Object> response = new HashMap<>();
         Account account = accountService.getAccountByAccountNumber(accountNumber);
