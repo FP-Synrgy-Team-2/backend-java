@@ -2,6 +2,7 @@ package com.example.jangkau.controllers;
 
 import com.example.jangkau.dto.AccountResponseDTO;
 import com.example.jangkau.dto.SavedAccountResponseDTO;
+import com.example.jangkau.mapper.SavedAccountMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
 import com.example.jangkau.services.AccountService;
@@ -29,16 +30,24 @@ public class SavedAccountsController {
 
     @Autowired ModelMapper modelMapper;
 
+    @Autowired SavedAccountMapper savedAccountMapper;
+
     @GetMapping("/{user_id}")
     public ResponseEntity<Map<String, Object>> getSavedAccounts(@PathVariable("user_id") UUID userId){
         Map<String, Object> response = new HashMap<>();
         List<SavedAccounts> savedAccounts = savedAccountService.getAllSavedAccount(userId);
         List<SavedAccountResponseDTO> savedAccountsList = savedAccounts
                 .stream()
-                .map(account -> modelMapper.map(account, SavedAccountResponseDTO.class))
+                .map(account -> savedAccountMapper.toSavedAccountResponse(account))
                 .collect(Collectors.toList());
-        response.put("status", "suscces");
-        response.put("data", savedAccountsList);
+        
+        response.put("status", "success");
+        if (savedAccountsList.isEmpty()) {
+            response.put("data", null);
+            response.put("message", "Nothing saved");
+        }else{
+            response.put("data", savedAccountsList);
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

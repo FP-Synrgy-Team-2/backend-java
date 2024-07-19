@@ -12,9 +12,9 @@ import com.example.jangkau.models.SavedAccounts;
 
 @Repository
 public interface SavedAccountRepository extends JpaRepository<SavedAccounts, UUID>{
-    @Query(value = "select s.saved_account_id , a.owner_name , a.account_number \n"+
+    @Query(value = "select * \n"+
         "from savedaccount s left join account a on a.account_id = s.account_id\n"+
-        "where s.userId = ? and deleted_date is null", nativeQuery = true)
+        "where s.user_id = ? and s.deleted_date is null", nativeQuery = true)
     List<SavedAccounts> findSavedAccountByUserId(UUID userId);
     SavedAccounts findSavedAccountsByUserIdAndAccountId(UUID userId, UUID accountId);
 

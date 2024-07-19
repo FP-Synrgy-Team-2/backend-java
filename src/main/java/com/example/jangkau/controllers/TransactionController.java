@@ -58,7 +58,7 @@ public class TransactionController {
                 savedAccountService.createSavedAccount(request);
             }
         }
-        response.put("status", "suscces");
+        response.put("status", "success");
         response.put("data", newTransaction);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

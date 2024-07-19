@@ -32,7 +32,15 @@ public class SavedAccountServiceImpl implements SavedAccountService {
 
     @Override
     public List<SavedAccounts> getAllSavedAccount(UUID userId) {
-        return savedAccountRepository.findSavedAccountByUserId(userId);
+        try {
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Not Found"));
+            return savedAccountRepository.findSavedAccountByUserId(userId);
+        } catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
+        }
     }
 
     @Override

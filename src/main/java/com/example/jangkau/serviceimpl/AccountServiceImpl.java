@@ -102,7 +102,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             AccountResponseDTO response = AccountResponseDTO.builder()
-                .id(account.getId())
+                .userId(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
                 .ownerName(account.getOwnerName())
