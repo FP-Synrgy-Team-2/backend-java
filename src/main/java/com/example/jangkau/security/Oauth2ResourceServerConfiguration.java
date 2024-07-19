@@ -25,7 +25,7 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
             "/api/**",
             "/api",
             "/api-contract",
-            "/users/create",
+            "/users/create"
     };
 
     /**
