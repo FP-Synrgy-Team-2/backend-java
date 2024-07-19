@@ -58,45 +58,33 @@ public class AccountController {
     }
 
     @GetMapping("/user/{user_id}")
-    public ResponseEntity<Map<String, Object>> getBankAccount(@PathVariable("user_id") String id) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> getBankAccount(@PathVariable("user_id") String id) {
         Account account = accountService.getAccountById(id);
-        HttpStatus httpStatus;
         Map<String, Object> data = new HashMap<>();
         if (account != null) {
-            response.put("message", "Account successfully retrieved.");
             data.put("account_id", account.getId());
             data.put("owner_name", account.getOwnerName());
             data.put("account_number", account.getAccountNumber());
             data.put("balance", account.getBalance());
-            httpStatus = HttpStatus.OK;
+            return ResponseEntity.ok(BaseResponse.success(data, "Account successfully retrieved."));
         } else {
-            response.put("message", "Account not found.");
-            httpStatus = HttpStatus.NOT_FOUND;
+            return ResponseEntity.ok(BaseResponse.failure(403, "Account not found."));
         }
-        response.put("data", data);
-        return new ResponseEntity<>(response, httpStatus);
     }
 
     @GetMapping("/account/{account_number}")
-    public ResponseEntity<Map<String, Object>> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
-        HttpStatus httpStatus;
         Map<String, Object> data = new HashMap<>();
         if (account != null) {
-            response.put("message", "Account successfully retrieved.");
             data.put("account_id", account.getId());
             data.put("owner_name", account.getOwnerName());
             data.put("account_number", account.getAccountNumber());
             data.put("balance", account.getBalance());
-            httpStatus = HttpStatus.OK;
+            return ResponseEntity.ok(BaseResponse.success(data, "Account successfully retrieved."));
         } else {
-            response.put("message", "Account not found.");
-            httpStatus = HttpStatus.NOT_FOUND;
+            return ResponseEntity.ok(BaseResponse.failure(403, "Account not found."));
         }
-        response.put("data", data);
-        return new ResponseEntity<>(response, httpStatus);
     }
 
     @PostMapping("/pin-validation")
