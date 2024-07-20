@@ -12,6 +12,6 @@ public class LoginRequest {
     @ValidUsername
     private String username;
     @NotEmpty(message = "must not empty")
-//    @ValidPassword
+    @ValidPassword
     private String password;
 }
