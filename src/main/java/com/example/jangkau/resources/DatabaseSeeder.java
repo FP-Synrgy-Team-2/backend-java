@@ -1,11 +1,13 @@
 package com.example.jangkau.resources;
 
 import com.example.jangkau.models.Account;
+import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Client;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.models.oauth2.RolePath;
 import com.example.jangkau.repositories.AccountRepository;
+import com.example.jangkau.repositories.TransactionRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RolePathRepository;
@@ -49,12 +51,14 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     private String[] users = new String[]{
             "admin@mail.com:Admin1:Admin1!:Admin:+628123456789:ROLE_SUPERUSER ROLE_USER ROLE_ADMIN",
-            "Johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:+628987654321:ROLE_USER"
+            "Johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:+628987654321:ROLE_USER",
+            "Janedoe@mail.com:Janedoe123:Janedoe123!:Jane Doe:+628234891525:ROLE_USER",
     };
 
     private String[] clients = new String[]{
             "my-client-apps:ROLE_READ ROLE_WRITE",
-            "my-client-web:ROLE_READ ROLE_WRITE"
+            "my-client-web:ROLE_READ ROLE_WRITE",
+            "my-client-wb:ROLE_READ ROLE_WRITE",
     };
 
     private String[] roles = new String[]{
@@ -64,6 +68,8 @@ public class DatabaseSeeder implements ApplicationRunner {
             "ROLE_READ:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS",
             "ROLE_WRITE:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS"
     };
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Override
     @Transactional
@@ -134,6 +140,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     @Transactional
     public void insertUsers() {
+        List<User> userList = new ArrayList<>();
         int i = 0;
         for (String userData : users) {
             String[] str = userData.split(":");
@@ -156,10 +163,13 @@ public class DatabaseSeeder implements ApplicationRunner {
                 oldUser.setRoles(r);
             }
 
+            userList.add(oldUser);
             userRepository.save(oldUser);
             insertAccounts(oldUser, oldUser.getFullName(), i);
             i++;
         }
+        insertTransactions(userList.get(0), userList.get(1), 200000.0);
+        insertTransactions(userList.get(2), userList.get(1), 700000.0);
     }
 
     @Transactional
@@ -174,6 +184,26 @@ public class DatabaseSeeder implements ApplicationRunner {
                     .build();
             oldAccount.setPin(DummyResource.ACCOUNTS_PIN[i], encoder);
             accountRepository.save(oldAccount);
+        }
+    }
+
+    @Transactional
+    public void insertTransactions(User sender, User recipient, Double amount) {
+        Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
+        Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
+        if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
+        else {
+            Transactions transactions = Transactions.builder()
+                    .accountId(sourceAccount)
+                    .beneficiaryAccount(recipientAccount)
+                    .amount(amount)
+                    .note("db seeder test")
+                    .build();
+            transactionRepository.save(transactions);
+            sourceAccount.setBalance(sourceAccount.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
+            recipientAccount.setBalance(recipientAccount.getBalance() + transactions.getAmount());
+            accountRepository.save(sourceAccount);
+            accountRepository.save(recipientAccount);
         }
     }
 }
