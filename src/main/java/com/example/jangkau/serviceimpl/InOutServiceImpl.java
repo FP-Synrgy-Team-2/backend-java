@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class InOutServiceImpl implements InOutService {
+    public static String AMOUNT = "amount";
+    public static String SOURCE_ACCOUNT = "source-account";
 
     @Override
-    public void getIncome(Account account, Date startDate, Date endDate) {
+    public Map<String, List<?>> getIncome(Account account, Date startDate, Date endDate) {
 //        throw new UnsupportedOperationException("Not supported yet.");
         List<Transactions> transactionsList = account.getTransactionsFrom();
         List<Transactions> transactionsInAPeriod = transactionsList.stream()
@@ -31,7 +33,11 @@ public class InOutServiceImpl implements InOutService {
         List<Account> sourceInFrom = transactionsInAPeriod.stream()
                 .map(Transactions::getAccountId)
                 .collect(Collectors.toList());
-        List<String[]> incomeHistory = new ArrayList<>();
+
+        Map<String, List<?>> incomeDetails = new LinkedHashMap<>();
+        incomeDetails.put(AMOUNT, transactionInAmount);
+        incomeDetails.put(SOURCE_ACCOUNT, sourceInFrom);
+        return incomeDetails;
     }
 
     @Override
