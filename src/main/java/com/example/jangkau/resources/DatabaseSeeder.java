@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -168,8 +170,13 @@ public class DatabaseSeeder implements ApplicationRunner {
             insertAccounts(oldUser, oldUser.getFullName(), i);
             i++;
         }
-        insertTransactions(userList.get(0), userList.get(1), 200000.0);
-        insertTransactions(userList.get(2), userList.get(1), 700000.0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2024, Calendar.JULY, 1);
+        Date date0 = calendar.getTime();
+        calendar.set(2024, Calendar.JULY, 26);
+        Date date1 = calendar.getTime();
+        insertTransactions(userList.get(0), userList.get(1), 200000.0, date0);
+        insertTransactions(userList.get(2), userList.get(1), 700000.0, date1);
     }
 
     @Transactional
@@ -188,7 +195,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     }
 
     @Transactional
-    public void insertTransactions(User sender, User recipient, Double amount) {
+    public void insertTransactions(User sender, User recipient, Double amount, Date transactionDate) {
         Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
         Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
         if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
@@ -197,6 +204,7 @@ public class DatabaseSeeder implements ApplicationRunner {
                     .accountId(sourceAccount)
                     .beneficiaryAccount(recipientAccount)
                     .amount(amount)
+                    .transactionDate(transactionDate)
                     .note("db seeder test")
                     .build();
             transactionRepository.save(transactions);

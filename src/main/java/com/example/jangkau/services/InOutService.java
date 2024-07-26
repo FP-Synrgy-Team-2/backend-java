@@ -9,5 +9,5 @@ import java.util.Map;
 public interface InOutService {
     Map<String, List<?>> getIncome(Account account, Date startDate, Date endDate);
 
-    void getOutcome(Account account, Date startDate, Date endDate);
+    Map<String, List<?>> getOutcome(Account account, Date startDate, Date endDate);
 }
