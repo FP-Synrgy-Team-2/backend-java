@@ -7,15 +7,13 @@ import com.example.jangkau.models.SavedAccounts;
 
 @Component
 public class SavedAccountMapper {
-
     public AccountResponse toSavedAccountResponse(SavedAccounts savedAccounts){
         return AccountResponse.builder()
             .accountId(savedAccounts.getId())
-            .ownerName(savedAccounts.getAccount().getOwnerName())
             .accountNumber(savedAccounts.getAccount().getAccountNumber())
+            .ownerName(savedAccounts.getAccount().getOwnerName())
             .build();
     }
-
-
-
 }
+
+    
