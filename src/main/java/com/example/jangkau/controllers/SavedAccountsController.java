@@ -2,7 +2,7 @@ package com.example.jangkau.controllers;
 
 import com.example.jangkau.config.EmailSender;
 import com.example.jangkau.dto.AccountResponseDTO;
-import com.example.jangkau.dto.SavedAccountResponseDTO;
+import com.example.jangkau.dto.AccountResponse;
 import com.example.jangkau.mapper.SavedAccountMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
@@ -41,7 +41,7 @@ public class SavedAccountsController {
     public ResponseEntity<Map<String, Object>> getSavedAccounts(@PathVariable("user_id") UUID userId){
         Map<String, Object> response = new HashMap<>();
         List<SavedAccounts> savedAccounts = savedAccountService.getAllSavedAccount(userId);
-        List<SavedAccountResponseDTO> savedAccountsList = savedAccounts
+        List<AccountResponse> savedAccountsList = savedAccounts
                 .stream()
                 .map(account -> savedAccountMapper.toSavedAccountResponse(account))
                 .collect(Collectors.toList());

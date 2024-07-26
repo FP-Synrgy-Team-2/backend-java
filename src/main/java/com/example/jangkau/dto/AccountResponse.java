@@ -7,8 +7,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SavedAccountResponseDTO {
-    private UUID savedAccountId;
+public class AccountResponse {
+    private UUID accountId;
     private String ownerName;
     private String accountNumber;
 }

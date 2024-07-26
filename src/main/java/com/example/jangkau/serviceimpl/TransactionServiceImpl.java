@@ -1,7 +1,10 @@
 package com.example.jangkau.serviceimpl;
 
+import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -12,14 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.webjars.NotFoundException;
 
-
+import com.example.jangkau.dto.AccountResponse;
+import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
 import com.example.jangkau.mapper.TransactionMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
+import com.example.jangkau.models.User;
 import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.TransactionRepository;
+import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.services.TransactionService;
 
 @Service
@@ -28,13 +34,8 @@ public class TransactionServiceImpl implements TransactionService{
     @Autowired ModelMapper modelMapper;
     @Autowired AccountRepository accountRepository;
     @Autowired TransactionMapper transactionMapper;
+    @Autowired UserRepository userRepository;
     
-
-    @Override
-    public List<Transactions> getAllTransactions(String accountNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllTransactions'");
-    }
 
     @Transactional
     @Override
@@ -77,5 +78,32 @@ public class TransactionServiceImpl implements TransactionService{
         Transactions transaction = transactionRepository.findById(uuid).orElse(null);
         if (transaction != null) return transaction;
         else throw new RuntimeException("transaction not found");
+    }
+
+    @Override
+    public List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, Date startDate, Date endDate) {
+        try {
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+        
+            Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
+            List<Transactions> transactions;
+
+            if (startDate == null || endDate == null) {
+                transactions = transactionRepository.findAllTransactions(account.getId());
+            }else{
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), startDate, endDate);
+            }
+            List<TransactionsHistoryDTO> histories = transactions
+                .stream()
+                .map(transaction -> transactionMapper.toTransactionsHistory(transaction, account.getId()))
+                .collect(Collectors.toList());
+            return histories;
+        } catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
+        }
     }
 }
