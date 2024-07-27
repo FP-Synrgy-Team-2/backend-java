@@ -1,5 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
+import com.example.jangkau.dto.TransactionInOutHistoryDTO;
+import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.repositories.AccountRepository;
@@ -62,5 +64,31 @@ public class InOutServiceImpl implements InOutService {
         outcomeDetails.put(AMOUNT, transactionInAmount);
         outcomeDetails.put(TARGET_ACCOUNT, recipientAccount);
         return outcomeDetails;
+    }
+
+    @Override
+    public List<TransactionInOutHistoryDTO> getTransactionInOutHistory(Account account) {
+        List<TransactionInOutHistoryDTO> transactionInOutHistoryDTOList = new ArrayList<>();
+        List<Transactions> transactions = transactionRepository.findAllTransactionsHistoryByAccount(account.getId());
+        transactions.forEach(
+                transaction -> {
+                    TransactionInOutHistoryDTO transactionInOutHistoryDTO = TransactionInOutHistoryDTO.builder()
+                            .transactionId(transaction.getTransactionId())
+                            .transactionDate(transaction.getTransactionDate())
+                            .note(transaction.getNote())
+                            .build();
+                    if (transaction.getAccountId() == account) {
+                        transactionInOutHistoryDTO.setAmount("- "+transaction.getAmount());
+                        transactionInOutHistoryDTO.setSourceId(account.getId());
+                        transactionInOutHistoryDTO.setBeneficiaryId(transaction.getBeneficiaryAccount().getId());
+                    } else if (transaction.getBeneficiaryAccount() == account) {
+                        transactionInOutHistoryDTO.setAmount("+ "+transaction.getAmount());
+                        transactionInOutHistoryDTO.setSourceId(transaction.getAccountId().getId());
+                        transactionInOutHistoryDTO.setBeneficiaryId(account.getId());
+                    }
+                    transactionInOutHistoryDTOList.add(transactionInOutHistoryDTO);
+                }
+        );
+        return transactionInOutHistoryDTOList;
     }
 }

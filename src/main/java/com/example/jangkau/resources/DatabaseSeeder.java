@@ -175,8 +175,11 @@ public class DatabaseSeeder implements ApplicationRunner {
         Date date0 = calendar.getTime();
         calendar.set(2024, Calendar.JULY, 26);
         Date date1 = calendar.getTime();
+        calendar.set(2024, Calendar.JULY, 27);
+        Date date2 = calendar.getTime();
         insertTransactions(userList.get(0), userList.get(1), 200000.0, date0);
         insertTransactions(userList.get(2), userList.get(1), 700000.0, date1);
+        insertTransactions(userList.get(1), userList.get(0), 500000.0, date2);
     }
 
     @Transactional

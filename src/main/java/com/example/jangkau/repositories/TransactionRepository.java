@@ -15,6 +15,11 @@ import com.example.jangkau.models.Transactions;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transactions, UUID>{
+    @Query(value = "select * from transactions\n" +
+            "where (account_id = ?1 or beneficiary_account = ?1) and deleted_date is null\n" +
+            "order by transaction_date desc", nativeQuery = true)
+    List<Transactions> findAllTransactionsHistoryByAccount(UUID accountId);
+
     List<Transactions> findByBeneficiaryAccount(Account beneficiaryAccount);
     
     List<Transactions> findByAccountId(Account account);
