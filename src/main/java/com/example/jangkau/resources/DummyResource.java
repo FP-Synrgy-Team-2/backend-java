@@ -5,7 +5,7 @@ public class DummyResource {
             "44441234561","44441244631","44441234567"
     };
     static Double[] ACCOUNTS_BALANCE = new Double[] {
-            1000000.0,2000000.0,2000000.0
+            1000000.0,2000000.0,20000000.0
     };
     static String[] ACCOUNTS_OWNER_NAME = new String[] {
             "Full Name Admin", "Full Name User"
