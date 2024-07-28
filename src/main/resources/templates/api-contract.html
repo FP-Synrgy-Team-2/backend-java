@@ -63,36 +63,6 @@
     <p><strong>Base Url : https://tense-margy-jangkau-a8ec8afe.koyeb.app/</strong></p>
 </header>
 <main>
-    <section id="auth-login">
-        <h2>/api/auth/login</h2>
-        <h3>POST</h3>
-        <p>Summary: Melakukan login</p>
-        <p>Description: Untuk masuk ke dalam sistem</p>
-        <p>Request Body:
-        <pre><code>{
-  "username": "johndoe123",
-  "password": "JohndoeEE23"
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Login Berhasil!
-                <pre><code>{
-  "user_id": "718f3f56-ca1a-47c2-af15-e8c933d34add",
-  "account_number": "409196498716",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
-  "token_type": "bearer",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
-  "expires_in": 28799,
-  "scope": "read writ",
-  "jti": "frBzLJX9CQ14QG_vDEXQB20AoWw"
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
-        </ul>
-        </p>
-    </section>
-
     <section id="register">
         <h2>/api/auth/register</h2>
         <h3>POST</h3>
@@ -110,10 +80,6 @@
         <ul>
             <li>200: Registrasi Berhasil!
                 <pre><code>{
-  "code": 200,
-  "message": "Success Register User",
-  "status": true,
-  "data": {
     "created_date": "2024-07-24T11:49:58.963+00:00",
     "deleted_date": null,
     "updated_date": "2024-07-24T11:49:58.963+00:00",
@@ -127,14 +93,131 @@
     "roles": [],
     "saved_accounts": null,
     "authorities": []
-  }
+  }</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+    <section id="auth-login">
+        <h2>/api/auth/login</h2>
+        <h3>POST</h3>
+        <p>Summary: Melakukan login</p>
+        <p>Description: Untuk masuk ke dalam sistem</p>
+        <p>Request Body:
+        <pre><code>{
+  "username": "johndoe123",
+  "password": "Johndoe123!"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Login Berhasil!
+                <pre><code>{
+  "user_id": "718f3f56-ca1a-47c2-af15-e8c933d34add",
+  "account_number": "409196498716",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer",
+  "expires_in": 28799,
+  "scope": "read writ",
+  "jti": "frBzLJX9CQ14QG_vDEXQB20AoWw"
 }</code></pre>
             </li>
             <li>400: Bad Request</li>
         </ul>
         </p>
     </section>
-
+    <section id="refresh-token">
+        <h2>/api/refresh-token</h2>
+        <h3>GET</h3>
+        <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
+        <p>Responses:
+        <ul>
+            <li>200: Token berhasil di-refresh.
+                <pre><code>{
+  "access_token": "newAccessToken",
+  "token_type": "bearer",
+  "refresh_token": "newRefreshToken",
+  "expires_in": 28799,
+  "scope": "read write",
+  "jti": "newJti"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+    <section id="forgot-password">
+        <h2>/api/auth/password</h2>
+        <h3>POST</h3>
+        <p>Summary: Mengirim email untuk reset password</p>
+        <p>Request Body:
+        <pre><code>{
+  "email_address": "johndoe@example.com"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Email untuk reset password berhasil dikirim
+                <pre><code>{
+  "code": 200,
+  "message": "Success Send OTP Forget Password",
+  "status": true,
+  "data": "Thanks, please check your email for activation."
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+    <section id="verify-otp">
+        <h2>/api/auth/password/otp</h2>
+        <h3>POST</h3>
+        <p>Summary: Verifikasi OTP untuk reset password</p>
+        <p>Request Body:
+        <pre><code>{
+  "otp": "123456"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: OTP berhasil diverifikasi
+                <pre><code>{
+  "code": 200,
+  "message": "Success Validate OTP",
+  "status": true,
+  "data": "Success, Please Change New Password!"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+    <section id="reset-password">
+        <h2>/api/auth/password/reset</h2>
+        <h3>POST</h3>
+        <p>Summary: Reset password</p>
+        <p>Request Body:
+        <pre><code>{
+  "email_address": "johndoe@example.com",
+  "otp": "123456",
+  "newPassword": "NewPassword123!"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Password berhasil direset
+                <pre><code>{
+  "code": 200,
+  "message": "Success Reset Password",
+  "status": true,
+  "data": "Success Reset Password, Please login with your new password!"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
     <section id="bank-accounts-pin-validation">
         <h2>/api/bank-accounts/pin-validation</h2>
         <h3>POST</h3>
@@ -334,107 +417,6 @@
   }
 ]</code></pre>
             </li>
-        </ul>
-        </p>
-    </section>
-    <section id="forgot-password">
-        <h2>/api/auth/password</h2>
-        <h3>POST</h3>
-        <p>Summary: Mengirim email untuk reset password</p>
-        <p>Request Body:
-        <pre><code>{
-  "email_address": "johndoe@example.com"
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Email untuk reset password berhasil dikirim
-                <pre><code>{
-  "code": 200,
-  "message": "Success Send OTP Forget Password",
-  "status": true,
-  "data": "Thanks, please check your email for activation."
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
-        </ul>
-        </p>
-    </section>
-
-    <section id="verify-otp">
-        <h2>/api/auth/password/otp</h2>
-        <h3>POST</h3>
-        <p>Summary: Verifikasi OTP untuk reset password</p>
-        <p>Request Body:
-        <pre><code>{
-  "otp": "123456"
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: OTP berhasil diverifikasi
-                <pre><code>{
-  "code": 200,
-  "message": "Success Validate OTP",
-  "status": true,
-  "data": "Success, Please Change New Password!"
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
-        </ul>
-        </p>
-    </section>
-
-    <section id="reset-password">
-        <h2>/api/auth/password/reset</h2>
-        <h3>POST</h3>
-        <p>Summary: Reset password</p>
-        <p>Request Body:
-        <pre><code>{
-  "email_address": "johndoe@example.com",
-  "otp": "123456",
-  "newPassword": "NewPassword123!"
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Password berhasil direset
-                <pre><code>{
-  "code": 200,
-  "message": "Success Reset Password",
-  "status": true,
-  "data": "Success Reset Password, Please login with your new password!"
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
-        </ul>
-        </p>
-    </section>
-    <section id="refresh-token">
-        <h2>/api/oauth/token</h2>
-        <h3>POST</h3>
-        <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
-        <p>Request Body (x-www-form-urlencoded):
-        <pre><code>{
-  "grant_type": "refresh_token",
-  "client_id": "my-client-web",
-  "client_secret": "password",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Token berhasil di-refresh.
-                <pre><code>{
-  "access_token": "newAccessToken",
-  "token_type": "bearer",
-  "refresh_token": "newRefreshToken",
-  "expires_in": 28799,
-  "scope": "read write",
-  "jti": "newJti"
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
         </ul>
         </p>
     </section>
