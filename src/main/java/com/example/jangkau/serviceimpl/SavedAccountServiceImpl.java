@@ -2,7 +2,7 @@ package com.example.jangkau.serviceimpl;
 
 
 import com.example.jangkau.dto.SavedAccountRequestDTO;
-import com.example.jangkau.dto.SavedAccountResponseDTO;
+import com.example.jangkau.dto.AccountResponse;
 import com.example.jangkau.mapper.SavedAccountMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
@@ -48,7 +48,7 @@ public class SavedAccountServiceImpl implements SavedAccountService {
     }
 
     @Override
-    public SavedAccountResponseDTO createSavedAccount(SavedAccountRequestDTO savedAccountRequestDTO) {
+    public AccountResponse createSavedAccount(SavedAccountRequestDTO savedAccountRequestDTO) {
         try {
             SavedAccounts savedAccounts = savedAccountRepository.findSavedAccountsByUserIdAndAccountId(savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
 
