@@ -71,7 +71,7 @@
         <p>Request Body:
         <pre><code>{
   "username": "johndoe123",
-  "password": "JohndoeEE23"
+  "password": "Johndoe123!"
 }</code></pre>
         </p>
         <p>Responses:
@@ -80,12 +80,31 @@
                 <pre><code>{
   "user_id": "718f3f56-ca1a-47c2-af15-e8c933d34add",
   "account_number": "409196498716",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "token_type": "bearer",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsib2F1dGgyLXJlc291cmNlI",
   "expires_in": 28799,
   "scope": "read writ",
   "jti": "frBzLJX9CQ14QG_vDEXQB20AoWw"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
+    <section id="refresh-token">
+        <h2>/api/refresh-token</h2>
+        <h3>GET</h3>
+        <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
+        <p>Responses:
+        <ul>
+            <li>200: Token berhasil di-refresh.
+                <pre><code>{
+  "access_token": "newAccessToken",
+  "token_type": "bearer",
+  "refresh_token": "newRefreshToken",
+  "expires_in": 28799,
+  "scope": "read write",
+  "jti": "newJti"
 }</code></pre>
             </li>
             <li>400: Bad Request</li>
@@ -404,34 +423,6 @@
   "message": "Success Reset Password",
   "status": true,
   "data": "Success Reset Password, Please login with your new password!"
-}</code></pre>
-            </li>
-            <li>400: Bad Request</li>
-        </ul>
-        </p>
-    </section>
-    <section id="refresh-token">
-        <h2>/api/oauth/token</h2>
-        <h3>POST</h3>
-        <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
-        <p>Request Body (x-www-form-urlencoded):
-        <pre><code>{
-  "grant_type": "refresh_token",
-  "client_id": "my-client-web",
-  "client_secret": "password",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Token berhasil di-refresh.
-                <pre><code>{
-  "access_token": "newAccessToken",
-  "token_type": "bearer",
-  "refresh_token": "newRefreshToken",
-  "expires_in": 28799,
-  "scope": "read write",
-  "jti": "newJti"
 }</code></pre>
             </li>
             <li>400: Bad Request</li>
