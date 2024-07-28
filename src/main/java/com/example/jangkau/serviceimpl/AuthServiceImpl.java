@@ -9,6 +9,7 @@ import com.example.jangkau.mapper.AuthMapper;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.repositories.UserRepository;
+import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RoleRepository;
 import com.example.jangkau.services.AuthService;
 import com.example.jangkau.services.ValidationService;
@@ -26,18 +27,14 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 import java.security.Principal;
 import java.util.*;
 
@@ -55,6 +52,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ValidationService validationService;
+
+    @Autowired
+    private TokenStore tokenStore;
 
     @Value("${BASEURL}")
     private String baseUrl;
@@ -80,9 +80,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private Config config;
 
-    @Autowired
-    private Oauth2UserDetailService userDetailsService;
-
     public User register(RegisterRequest request) {
         validationService.validate(request);
         String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
@@ -95,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exist");
         }
         User user = new User();
-        user.setUsername(request.getUsername().toLowerCase());
+        user.setUsername(request.getUsername());
         user.setEmailAddress(request.getEmailAddress());
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -107,7 +104,8 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(user);
     }
 
-    public LoginResponse login(LoginRequest request) {
+    @Override
+    public LoginResponse login(LoginRequest request, HttpServletResponse response) {
         validationService.validate(request);
         User checkUser = userRepository.findByUsername(request.getUsername());
 
@@ -122,38 +120,66 @@ public class AuthServiceImpl implements AuthService {
         if (!(encoder.matches(request.getPassword(), checkUser.getPassword()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
         }
+
         String url = baseUrl + "/oauth/token?username=" + checkUser.getUsername() +
                 "&password=" + request.getPassword() +
                 "&grant_type=password" +
                 "&client_id=my-client-web" +
                 "&client_secret=password";
-        ResponseEntity<Map> response = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
+        ResponseEntity<Map> apiResponse = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
                 ParameterizedTypeReference<Map>() {
                 }
         );
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            User user = userRepository.findByUsername(request.getUsername());
-            List<String> roles = new ArrayList<>();
+        if (apiResponse.getStatusCode() == HttpStatus.OK) {
+            LoginResponse loginResponse = authMapper.toLoginResponse(apiResponse, checkUser);
 
-            for (Role role : user.getRoles()) {
-                roles.add(role.getName());
-            }
+            Cookie refreshTokenCookie = new Cookie("refresh_token", (String) loginResponse.getRefreshToken());
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setSecure(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
 
-            return authMapper.toLoginResponse(response);
+            response.addCookie(refreshTokenCookie);
+
+            return loginResponse;
         } else {
-            throw new ResponseStatusException(response.getStatusCode(), "User not found");
+            throw new ResponseStatusException(apiResponse.getStatusCode(), "User not found");
         }
     }
 
-    @Override
-    public void logout(Principal principal) {
-        if (principal != null) {
-            SecurityContextHolder.clearContext();
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not logged in");
-        }
-    }
+//    public LoginResponse login(LoginRequest request) {
+//        validationService.validate(request);
+//        User checkUser = userRepository.findByUsername(request.getUsername());
+//
+//        if ((checkUser != null) && (encoder.matches(request.getPassword(), checkUser.getPassword()))) {
+//            if (!checkUser.isEnabled()) {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not enabled");
+//            }
+//        }
+//        if (checkUser == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+//        }
+//        if (!(encoder.matches(request.getPassword(), checkUser.getPassword()))) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
+//        }
+//
+//        String url = baseUrl + "/oauth/token?username=" + checkUser.getUsername() +
+//                "&password=" + request.getPassword() +
+//                "&grant_type=password" +
+//                "&client_id=my-client-web" +
+//                "&client_secret=password";
+//        ResponseEntity<Map> response = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
+//                ParameterizedTypeReference<Map>() {
+//                }
+//        );
+//
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            return authMapper.toLoginResponse(response, checkUser);
+//        } else {
+//            throw new ResponseStatusException(response.getStatusCode(), "User not found");
+//        }
+//    }
 
     @Override
     public Object sendEmailOtp(EmailRequest request, String subject) {
@@ -164,7 +190,8 @@ public class AuthServiceImpl implements AuthService {
         if (found == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email Not Found");
         }
-        String template = subject.equalsIgnoreCase("Register") ? emailTemplate.getRegisterTemplate() : emailTemplate.getResetPassword();
+
+        String template = emailTemplate.getResetPassword();
         if (StringUtils.isEmpty(found.getOtp())) {
             User search;
             String otp;

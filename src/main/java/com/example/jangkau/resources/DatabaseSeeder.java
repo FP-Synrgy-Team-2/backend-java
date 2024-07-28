@@ -1,11 +1,13 @@
 package com.example.jangkau.resources;
 
 import com.example.jangkau.models.Account;
+import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Client;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.models.oauth2.RolePath;
 import com.example.jangkau.repositories.AccountRepository;
+import com.example.jangkau.repositories.TransactionRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RolePathRepository;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -48,13 +52,15 @@ public class DatabaseSeeder implements ApplicationRunner {
     private AccountRepository accountRepository;
 
     private String[] users = new String[]{
-            "admin@mail.com:Admin1:Admin1!:Admin:+628123456789:ROLE_SUPERUSER ROLE_USER ROLE_ADMIN",
-            "Johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:+628987654321:ROLE_USER"
+            "admin@mail.com:Admin1:Admin123!:Admin:08123456789:ROLE_SUPERUSER ROLE_USER ROLE_ADMIN",
+            "johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:08987654321:ROLE_USER",
+            "fulan@mail.com:Fulan123:Fulan123!:Fulan:08987654321:ROLE_USER"
     };
 
     private String[] clients = new String[]{
             "my-client-apps:ROLE_READ ROLE_WRITE",
-            "my-client-web:ROLE_READ ROLE_WRITE"
+            "my-client-web:ROLE_READ ROLE_WRITE",
+            "my-client-wb:ROLE_READ ROLE_WRITE",
     };
 
     private String[] roles = new String[]{
@@ -64,6 +70,8 @@ public class DatabaseSeeder implements ApplicationRunner {
             "ROLE_READ:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS",
             "ROLE_WRITE:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS"
     };
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Override
     @Transactional
@@ -115,7 +123,7 @@ public class DatabaseSeeder implements ApplicationRunner {
             if (null == oldClient) {
                 oldClient = new Client();
                 oldClient.setClientId(clientName);
-                oldClient.setAccessTokenValiditySeconds(28800);
+                oldClient.setAccessTokenValiditySeconds(600);
                 oldClient.setRefreshTokenValiditySeconds(7257600);
                 oldClient.setGrantTypes("password refresh_token authorization_code");
                 oldClient.setClientSecret(encoder.encode("password"));
@@ -134,6 +142,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     @Transactional
     public void insertUsers() {
+        List<User> userList = new ArrayList<>();
         int i = 0;
         for (String userData : users) {
             String[] str = userData.split(":");
@@ -156,10 +165,21 @@ public class DatabaseSeeder implements ApplicationRunner {
                 oldUser.setRoles(r);
             }
 
+            userList.add(oldUser);
             userRepository.save(oldUser);
             insertAccounts(oldUser, oldUser.getFullName(), i);
             i++;
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2024, Calendar.JULY, 1);
+        Date date0 = calendar.getTime();
+        calendar.set(2024, Calendar.JULY, 26);
+        Date date1 = calendar.getTime();
+        calendar.set(2024, Calendar.JULY, 27);
+        Date date2 = calendar.getTime();
+        insertTransactions(userList.get(0), userList.get(1), 200000.0, date0);
+        insertTransactions(userList.get(2), userList.get(1), 700000.0, date1);
+        insertTransactions(userList.get(1), userList.get(0), 500000.0, date2);
     }
 
     @Transactional
@@ -174,6 +194,27 @@ public class DatabaseSeeder implements ApplicationRunner {
                     .build();
             oldAccount.setPin(DummyResource.ACCOUNTS_PIN[i], encoder);
             accountRepository.save(oldAccount);
+        }
+    }
+
+    @Transactional
+    public void insertTransactions(User sender, User recipient, Double amount, Date transactionDate) {
+        Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
+        Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
+        if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
+        else {
+            Transactions transactions = Transactions.builder()
+                    .accountId(sourceAccount)
+                    .beneficiaryAccount(recipientAccount)
+                    .amount(amount)
+                    .transactionDate(transactionDate)
+                    .note("db seeder test")
+                    .build();
+            transactionRepository.save(transactions);
+            sourceAccount.setBalance(sourceAccount.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
+            recipientAccount.setBalance(recipientAccount.getBalance() + transactions.getAmount());
+            accountRepository.save(sourceAccount);
+            accountRepository.save(recipientAccount);
         }
     }
 }
