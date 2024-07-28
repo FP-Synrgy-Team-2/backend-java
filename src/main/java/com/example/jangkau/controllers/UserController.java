@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/create")
+    @PostMapping()
     public ResponseEntity<?> create(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(BaseResponse.success(userService.create(userRequest), "Success Create User"));
     }

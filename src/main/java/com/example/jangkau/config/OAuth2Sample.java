@@ -9,6 +9,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
@@ -22,18 +23,29 @@ import java.util.Objects;
 
 public class OAuth2Sample {
 
-
+    /**
+     * Be sure to specify the name of your application. If the application name is {@code null} or
+     * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
+     */
     private static final String APPLICATION_NAME = "";
 
+    /** Directory to store user credentials. */
     private static final java.io.File DATA_STORE_DIR =
             new java.io.File(System.getProperty("user.home"), ".store/oauth2_sample");
 
+    /**
+     * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
+     * globally shared instance across your application.
+     */
     private static FileDataStoreFactory dataStoreFactory;
 
+    /** Global instance of the HTTP transport. */
     private static HttpTransport httpTransport;
 
+    /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
+    /** OAuth 2.0 scopes. */
     private static final List<String> SCOPES = Arrays.asList(
             "https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email");
@@ -41,6 +53,7 @@ public class OAuth2Sample {
     private static Oauth2 oauth2;
     private static GoogleClientSecrets clientSecrets;
 
+    /** Authorizes the installed application to access user's protected data. */
     private static Credential authorize() throws Exception {
         // load client secrets
         clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,

@@ -1,5 +1,6 @@
 package com.example.jangkau.dto.auth;
 
+import com.example.jangkau.services.ValidPassword;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class ResetPasswordRequest {
     @NotEmpty(message = "Must not empty")
     private String otp;
     @NotEmpty(message = "Must not empty")
-    @Size(min = 6, max = 8, message = "must between 6-8 Characters")
+    @ValidPassword
     private String newPassword;
 }

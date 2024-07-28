@@ -6,10 +6,10 @@ import com.example.jangkau.services.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
 @Tag(name = "Auth")
@@ -20,21 +20,40 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("register")
+    @Autowired
+    private TokenStore tokenStore;
+
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(BaseResponse.success(authService.register(request), "Success Register User"));
     }
 
-    @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(BaseResponse.success(authService.login(request), "Success Login User"));
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+        LoginResponse loginResponse = authService.login(request, response);
+        return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("logout")
-    public ResponseEntity<?> logout(Principal principal) {
-        authService.logout(principal);
-        return ResponseEntity.ok(BaseResponse.success(null, "Success Logout User"));
-    }
+//    @PostMapping("login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+//        return ResponseEntity.ok(BaseResponse.success(authService.login(request), "Success Login User"));
+//    }
+
+//    @PostMapping("/logout")
+//    public void logout(HttpServletRequest request, Authentication authentication) {
+//        String token = null;
+//        Enumeration<String> headers = request.getHeaders("Authorization");
+//        while (headers.hasMoreElements()) {
+//            String value = headers.nextElement();
+//            if ((value.toLowerCase().startsWith("bearer"))) {
+//                token = value.substring("bearer".length()).trim();
+//                OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token);
+//                if (oAuth2AccessToken != null) {
+//                    tokenStore.removeAccessToken(oAuth2AccessToken);
+//                }
+//            }
+//        }
+//    }
 
     @PostMapping("/otp")
     public ResponseEntity<?> sendEmailOtp(@RequestBody EmailRequest req) {
