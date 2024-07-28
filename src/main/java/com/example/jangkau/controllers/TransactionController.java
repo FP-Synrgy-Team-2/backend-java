@@ -60,8 +60,8 @@ public class TransactionController {
             trans.setBeneficiaryAccount(beneficiary);
             accountService.updateBalance(trans);
             if (transactionsRequestDTO.isSaved()) {
-                Account account = accountService.getAccountById(transactionsRequestDTO.getBeneficiaryAccount().toString());
-                Account userAccount = accountService.getAccountById(transactionsRequestDTO.getAccountId().toString());
+                Account account = accountService.getAccountByAccountId(transactionsRequestDTO.getBeneficiaryAccount());
+                Account userAccount = accountService.getAccountByAccountId(transactionsRequestDTO.getAccountId());
                 UserResponse user = userService.findById(userAccount.getUser().getId());
                 SavedAccountRequestDTO request = SavedAccountRequestDTO.builder()
                     .accountId(account.getId())
