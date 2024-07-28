@@ -22,5 +22,6 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> failure(Integer code, String message) {
         return new BaseResponse<>(code, message, false, null);
     }
+
 }
 

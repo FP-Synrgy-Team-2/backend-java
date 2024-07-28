@@ -4,72 +4,6 @@ import org.springframework.stereotype.Component;
 
 @Component("emailTemplate")
 public class EmailTemplate {
-    public String getRegisterTemplate() {
-        return "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "<style>\n" +
-                "\t.email-container {\n" +
-                "\t\tpadding-top: 10px;\n" +
-                "\t}\n" +
-                "\tp {\n" +
-                "\t\ttext-align: left;\n" +
-                "\t}\n" +
-                "\n" +
-                "\ta.btn {\n" +
-                "\t\tdisplay: block;\n" +
-                "\t\tmargin: 30px auto;\n" +
-                "\t\tbackground-color: #01c853;\n" +
-                "\t\tpadding: 10px 20px;\n" +
-                "\t\tcolor: #fff;\n" +
-                "\t\ttext-decoration: none;\n" +
-                "\t\twidth: 30%;\n" +
-                "\t\ttext-align: center;\n" +
-                "\t\tborder: 1px solid #01c853;\n" +
-                "\t\ttext-transform: uppercase;\n" +
-                "\t}\n" +
-                "\ta.btn:hover,\n" +
-                "\ta.btn:focus {\n" +
-                "\t\tcolor: #01c853;\n" +
-                "\t\tbackground-color: #fff;\n" +
-                "\t\tborder: 1px solid #01c853;\n" +
-                "\t}\n" +
-                "\t.user-name {\n" +
-                "\t\ttext-transform: uppercase;\n" +
-                "\t}\n" +
-                "\t.manual-link,\n" +
-                "\t.manual-link:hover,\n" +
-                "\t.manual-link:focus {\n" +
-                "\t\tdisplay: block;\n" +
-                "\t\tcolor: #396fad;\n" +
-                "\t\tfont-weight: bold;\n" +
-                "\t\tmargin-top: -15px;\n" +
-                "\t}\n" +
-                "\t.mt--15 {\n" +
-                "\t\tmargin-top: -15px;\n" +
-                "\t}\n" +
-                "</style>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "\t<div class=\"email-container\">\n" +
-                "\t\t<p>Halo <span class=\"user-name\">{{USERNAME}}</span> Selamat bergabung</p>\n" +
-                "\t\t<p>Harap konfirmasikan email kamu dengan memasukan kode dibawah ini</p>\n" +
-                "\t\t\n" +
-                "\t\tkode: <b>{{TOKEN}}</b>\n" +
-                "\t\t\n" +
-                "\t\t<p class=\"mt--15\">Jika kamu butuh bantuan atau pertanyaan, hubungi customer care kami di .... atau kirim email ke ....</p>\n" +
-                "\t\t\n" +
-                "\t\t<p>Semoga harimu menyenangkan!</p>\n" +
-                "\t\t\n" +
-                "\t\t<p>PT ABC,</p>\n" +
-                "\t\t<p class=\"mt--15\".....</p>\n" +
-                "\n" +
-                "\t\t\n" +
-                "\t</div>\n" +
-                "</body>\n" +
-                "</html>";
-    }
-
     public String getResetPassword(){
 
         return "<!doctype html>\n" +
@@ -93,16 +27,6 @@ public class EmailTemplate {
                 "<td style=\"height:80px;\">&nbsp;</td>\n" +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td style=\"text-align:center;\">\n" +
-                "<a href=\"#\" title=\"logo\" target=\"_blank\">\n" +
-                "<img width=\"60\" src=\"https://drive.google.com/uc?export=view&id=1NiO5cQZDXA31eFJozu_wrEHUK4vbzz1o\" title=\"logo\" alt=\"logo\">\n" +
-                "</a>\n" +
-                "</td>\n" +
-                "</tr>\n" +
-                "<tr>\n" +
-                "<td style=\"height:20px;\">&nbsp;</td>\n"+
-                "</tr>\n" +
-                "<tr>\n" +
                 "<td>\n" +
                 "<table width=\"95%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\"" +
                 "style=\"max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);\">\n" +
@@ -118,7 +42,7 @@ public class EmailTemplate {
                 "Please use the verification code below to reset your password : <br/> </p>" +
                 "<strong style=\"font-size:24px;\">{{TOKEN}}</strong> <br/>\n" +
                 "<p style=\"color:#455056; font-size:15px;line-height:24px; margin:0;\">\n" +
-                "If this action wasn’t done by you, please contact us on <b>ridhoga186@gmail.com</b>. But if it’s you, you can ignore this message. </p>" +
+                "If this action wasn’t done by you, please contact us on <b>jangkauofficial@gmail.com</b>. But if it’s you, you can ignore this message. </p>" +
                 "</td>\n"+
                 "</tr>\n"+
                 "<tr>\n" +
