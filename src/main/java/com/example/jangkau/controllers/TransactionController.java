@@ -91,7 +91,7 @@ public class TransactionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/history-by-date/{user_id}")
+    @PostMapping("/history/{user_id}")
     public ResponseEntity<Map<String, Object>> getHistoriesByDate(
             @PathVariable("user_id") UUID userId, 
             @RequestBody DateFilterRequestDTO request){
