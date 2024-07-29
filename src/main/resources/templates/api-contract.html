@@ -218,6 +218,30 @@
         </ul>
         </p>
     </section>
+
+    <section id="logout">
+        <h2>/api/auth/logout</h2>
+        <h3>POST</h3>
+        <p>Summary: Menghapus refresh token dari cookies dan logout pengguna</p>
+        <p>Description: Endpoint ini akan menghapus refresh token dari cookies untuk melakukan logout.</p>
+        <p>Request Headers:
+        <pre><code>{
+  "Content-Type": "application/json"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Logout Berhasil!
+                <pre><code>{
+  "status": "success",
+  "message": "Logged out successfully"
+}</code></pre>
+            </li>
+            <li>401: Unauthorized (jika sesi tidak valid atau pengguna tidak terautentikasi)</li>
+        </ul>
+        </p>
+    </section>
+
     <section id="bank-accounts-pin-validation">
         <h2>/api/bank-accounts/pin-validation</h2>
         <h3>POST</h3>
