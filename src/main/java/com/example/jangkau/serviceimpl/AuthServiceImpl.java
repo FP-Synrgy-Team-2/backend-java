@@ -139,6 +139,7 @@ public class AuthServiceImpl implements AuthService {
             refreshTokenCookie.setSecure(true);
             refreshTokenCookie.setPath("/");
             refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+            refreshTokenCookie.setComment("SameSite=None");
 
             response.addCookie(refreshTokenCookie);
 
@@ -148,38 +149,17 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-//    public LoginResponse login(LoginRequest request) {
-//        validationService.validate(request);
-//        User checkUser = userRepository.findByUsername(request.getUsername());
-//
-//        if ((checkUser != null) && (encoder.matches(request.getPassword(), checkUser.getPassword()))) {
-//            if (!checkUser.isEnabled()) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not enabled");
-//            }
-//        }
-//        if (checkUser == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-//        }
-//        if (!(encoder.matches(request.getPassword(), checkUser.getPassword()))) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
-//        }
-//
-//        String url = baseUrl + "/oauth/token?username=" + checkUser.getUsername() +
-//                "&password=" + request.getPassword() +
-//                "&grant_type=password" +
-//                "&client_id=my-client-web" +
-//                "&client_secret=password";
-//        ResponseEntity<Map> response = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
-//                ParameterizedTypeReference<Map>() {
-//                }
-//        );
-//
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            return authMapper.toLoginResponse(response, checkUser);
-//        } else {
-//            throw new ResponseStatusException(response.getStatusCode(), "User not found");
-//        }
-//    }
+    @Override
+    public void logout(HttpServletResponse response) {
+        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0);
+        refreshTokenCookie.setComment("SameSite=None");
+
+        response.addCookie(refreshTokenCookie);
+    }
 
     @Override
     public Object sendEmailOtp(EmailRequest request, String subject) {
