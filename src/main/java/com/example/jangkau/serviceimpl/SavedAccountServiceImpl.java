@@ -51,10 +51,6 @@ public class SavedAccountServiceImpl implements SavedAccountService {
     public AccountResponse createSavedAccount(SavedAccountRequestDTO savedAccountRequestDTO) {
         try {
             SavedAccounts savedAccounts = savedAccountRepository.findSavedAccountsByUserIdAndAccountId(savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
-
-            if (savedAccounts != null) {
-                logger.error("Saved account with userId {} and accountId {} already exists", savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
-            }
             
             Account account = accountRepository.findById(savedAccountRequestDTO.getAccountId())
                 .orElse(null);
@@ -68,14 +64,19 @@ public class SavedAccountServiceImpl implements SavedAccountService {
                 logger.error("User with userId {} not found", savedAccountRequestDTO.getUserId());
             }
 
-            SavedAccounts newSavedAccounts = SavedAccounts.builder()
+            if (savedAccounts != null) {
+                logger.error("Saved account with userId {} and accountId {} already exists", savedAccountRequestDTO.getUserId(), savedAccountRequestDTO.getAccountId());
+            }else{
+                SavedAccounts newSavedAccounts = SavedAccounts.builder()
                 .account(account)
                 .user(user)
                 .build();
 
-            savedAccountRepository.save(newSavedAccounts);
-            newSavedAccounts.setId(newSavedAccounts.getId());
-            return savedAccountMapper.toSavedAccountResponse(newSavedAccounts);
+                savedAccountRepository.save(newSavedAccounts);
+                newSavedAccounts.setId(newSavedAccounts.getId());
+                return savedAccountMapper.toSavedAccountResponse(newSavedAccounts);
+            }
+            return null;
 
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);

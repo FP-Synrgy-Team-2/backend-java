@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.jangkau.dto.DateFilterRequestDTO;
 import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
@@ -17,5 +18,5 @@ public interface TransactionService {
     
     Transactions getTransaction(String transactionId);
 
-    List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, Date startDate, Date endDate);
+    List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, DateFilterRequestDTO request);
 }
