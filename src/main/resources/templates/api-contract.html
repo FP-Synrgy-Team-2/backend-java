@@ -131,6 +131,10 @@
         <h2>/api/refresh-token</h2>
         <h3>GET</h3>
         <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
+        <p>Request Param:
+        <pre><code>
+  "refresh_token": "refresh token user"</code></pre>
+        </p>
         <p>Responses:
         <ul>
             <li>200: Token berhasil di-refresh.
@@ -219,28 +223,28 @@
         </p>
     </section>
 
-    <section id="logout">
-        <h2>/api/auth/logout</h2>
-        <h3>POST</h3>
-        <p>Summary: Menghapus refresh token dari cookies dan logout pengguna</p>
-        <p>Description: Endpoint ini akan menghapus refresh token dari cookies untuk melakukan logout.</p>
-        <p>Request Headers:
-        <pre><code>{
-  "Content-Type": "application/json"
-}</code></pre>
-        </p>
-        <p>Responses:
-        <ul>
-            <li>200: Logout Berhasil!
-                <pre><code>{
-  "status": "success",
-  "message": "Logged out successfully"
-}</code></pre>
-            </li>
-            <li>401: Unauthorized (jika sesi tidak valid atau pengguna tidak terautentikasi)</li>
-        </ul>
-        </p>
-    </section>
+<!--    <section id="logout">-->
+<!--        <h2>/api/auth/logout</h2>-->
+<!--        <h3>POST</h3>-->
+<!--        <p>Summary: Menghapus refresh token dari cookies dan logout pengguna</p>-->
+<!--        <p>Description: Endpoint ini akan menghapus refresh token dari cookies untuk melakukan logout.</p>-->
+<!--        <p>Request Headers:-->
+<!--        <pre><code>{-->
+<!--  "Content-Type": "application/json"-->
+<!--}</code></pre>-->
+<!--        </p>-->
+<!--        <p>Responses:-->
+<!--        <ul>-->
+<!--            <li>200: Logout Berhasil!-->
+<!--                <pre><code>{-->
+<!--  "status": "success",-->
+<!--  "message": "Logged out successfully"-->
+<!--}</code></pre>-->
+<!--            </li>-->
+<!--            <li>401: Unauthorized (jika sesi tidak valid atau pengguna tidak terautentikasi)</li>-->
+<!--        </ul>-->
+<!--        </p>-->
+<!--    </section>-->
 
     <section id="bank-accounts-pin-validation">
         <h2>/api/bank-accounts/pin-validation</h2>
@@ -417,6 +421,64 @@
 }</code></pre>
             </li>
             <li>404: Transaksi tidak ditemukan</li>
+        </ul>
+        </p>
+    </section>
+
+    <section id="transactions-history">
+        <h2>/api/transactions/history/{user_id}</h2>
+        <h3>POST</h3>
+        <p>Summary: Mendapatkan riwayat transaksi pengguna dalam rentang tanggal tertentu</p>
+        <p>Description: Endpoint ini mengembalikan daftar transaksi untuk pengguna tertentu dalam rentang tanggal yang diberikan.</p>
+        <p>Request Body:
+        <pre><code>{
+  "start_date": "2024-07-15",
+  "end_date": "2024-07-19"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Riwayat transaksi berhasil diambil.
+                <pre><code>{
+  "data": [
+    {
+      "transaction_id": "bf3ac8f8-0ca6-4f0c-9790-a3f720c5cde9",
+      "from": {
+        "account_id": "181e6c04-b48f-477a-b8d0-662bc0e675ba",
+        "owner_name": "John Doe",
+        "account_number": "408006321246"
+      },
+      "to": {
+        "account_id": "92046e5c-3b07-4327-8459-0858175c53ab",
+        "owner_name": "user",
+        "account_number": "401191607926"
+      },
+      "transaction_date": "2024-07-15T15:05:14.293+00:00",
+      "total": 100000.0,
+      "type": "Pengeluaran"
+    },
+    {
+      "transaction_id": "1046e5e4-03fd-4944-95c0-04c70ee658d4",
+      "from": {
+        "account_id": "181e6c04-b48f-477a-b8d0-662bc0e675ba",
+        "owner_name": "John Doe",
+        "account_number": "408006321246"
+      },
+      "to": {
+        "account_id": "92046e5c-3b07-4327-8459-0858175c53ab",
+        "owner_name": "user",
+        "account_number": "401191607926"
+      },
+      "transaction_date": "2024-07-15T15:05:14.293+00:00",
+      "total": 100000.0,
+      "type": "Pengeluaran"
+    }
+  ],
+  "status": "success"
+}</code></pre>
+            </li>
+            <li>400: Bad Request (jika parameter tidak valid)</li>
+            <li>404: Tidak ada transaksi ditemukan untuk rentang tanggal yang diberikan</li>
         </ul>
         </p>
     </section>

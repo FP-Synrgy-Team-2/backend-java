@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import javax.annotation.Priority;
 
@@ -78,4 +80,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         return services;
     }
+
+//    @Bean
+//    public CookieSerializer cookieSerializer() {
+//        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+//        cookieSerializer.setSameSite("None");
+//        return cookieSerializer;
+//    }
 }

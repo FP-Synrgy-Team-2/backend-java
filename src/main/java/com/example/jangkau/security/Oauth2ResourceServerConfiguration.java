@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
@@ -24,7 +25,9 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
             "/swagger-ui/**",
             "/api-docs/**",
             "/swagger-resources/**",
-            "/api-contract"
+            "/api-contract",
+            "/refresh-token",
+            "/refresh-token/**"
     };
 
     @Override
@@ -48,7 +51,7 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .antMatchers(HttpMethod.GET, "/transactions").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/bank-accounts/user/{userId}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/saved-accounts").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/auth/logout").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(HttpMethod.POST, "/logout").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/users").hasAnyAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ROLE_ADMIN")
@@ -59,7 +62,10 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin()
-                .permitAll();
+                .formLogin().permitAll();
+//                .and()
+//                .sessionManagement()
+//                .sessionFixation().none()
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 }

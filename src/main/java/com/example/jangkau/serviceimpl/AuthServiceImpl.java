@@ -134,14 +134,14 @@ public class AuthServiceImpl implements AuthService {
         if (apiResponse.getStatusCode() == HttpStatus.OK) {
             LoginResponse loginResponse = authMapper.toLoginResponse(apiResponse, checkUser);
 
-            Cookie refreshTokenCookie = new Cookie("refresh_token", (String) loginResponse.getRefreshToken());
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setSecure(true);
-            refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
-            refreshTokenCookie.setComment("SameSite=None");
-
-            response.addCookie(refreshTokenCookie);
+//            Cookie refreshTokenCookie = new Cookie("refresh_token", (String) loginResponse.getRefreshToken());
+//            refreshTokenCookie.setHttpOnly(true);
+//            refreshTokenCookie.setSecure(true);
+//            refreshTokenCookie.setPath("/");
+//            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+//            refreshTokenCookie.setComment("SameSite=None");
+//
+//            response.addCookie(refreshTokenCookie);
 
             return loginResponse;
         } else {
@@ -149,17 +149,53 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    @Override
-    public void logout(HttpServletResponse response) {
-        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(0);
-        refreshTokenCookie.setComment("SameSite=None");
+//@Override
+//public LoginResponse login(LoginRequest request, HttpServletResponse response) {
+//    validationService.validate(request);
+//    User checkUser = userRepository.findByUsername(request.getUsername());
+//
+//    if ((checkUser != null) && (encoder.matches(request.getPassword(), checkUser.getPassword()))) {
+//        if (!checkUser.isEnabled()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not enabled");
+//        }
+//    }
+//    if (checkUser == null) {
+//        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+//    }
+//    if (!(encoder.matches(request.getPassword(), checkUser.getPassword()))) {
+//        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
+//    }
+//
+//    String url = baseUrl + "/oauth/token?username=" + checkUser.getUsername() +
+//            "&password=" + request.getPassword() +
+//            "&grant_type=password" +
+//            "&client_id=my-client-web" +
+//            "&client_secret=password";
+//    ResponseEntity<Map> apiResponse = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
+//            ParameterizedTypeReference<Map>() {
+//            }
+//    );
+//
+//    if (apiResponse.getStatusCode() == HttpStatus.OK) {
+//        LoginResponse loginResponse = authMapper.toLoginResponse(apiResponse, checkUser);
+//
+//        String refreshToken = (String) loginResponse.getRefreshToken();
+//        String cookieValue = "refresh_token=" + refreshToken + "; SameSite=None; Secure; HttpOnly; Path=/; Max-Age=" + (60 * 60 * 24 * 7);
+//
+//        response.setHeader("Set-Cookie", cookieValue);
+//
+//        return loginResponse;
+//    } else {
+//        throw new ResponseStatusException(apiResponse.getStatusCode(), "User not found");
+//    }
+//}
 
-        response.addCookie(refreshTokenCookie);
-    }
+//    @Override
+//    public void logout(HttpServletResponse response) {
+////        String cookieValue = "refresh_token=; HttpOnly; Secure; Path=/; Max-Age=0; SameSite=None";
+////
+////        response.addHeader("Set-Cookie", cookieValue);
+//    }
 
     @Override
     public Object sendEmailOtp(EmailRequest request, String subject) {
