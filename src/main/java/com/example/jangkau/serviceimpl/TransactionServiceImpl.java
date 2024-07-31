@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.webjars.NotFoundException;
 
 import com.example.jangkau.dto.AccountResponse;
+import com.example.jangkau.dto.DateFilterRequestDTO;
 import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
@@ -81,7 +82,7 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, Date startDate, Date endDate) {
+    public List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, DateFilterRequestDTO requestDTO) {
         try {
             User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
@@ -90,10 +91,10 @@ public class TransactionServiceImpl implements TransactionService{
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
             List<Transactions> transactions;
 
-            if (startDate == null || endDate == null) {
+            if (requestDTO == null) {
                 transactions = transactionRepository.findAllTransactions(account.getId());
             }else{
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), startDate, endDate);
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), requestDTO.getEndDate());
             }
             List<TransactionsHistoryDTO> histories = transactions
                 .stream()

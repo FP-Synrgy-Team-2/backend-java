@@ -9,7 +9,7 @@ import com.example.jangkau.models.SavedAccounts;
 public class SavedAccountMapper {
     public AccountResponse toSavedAccountResponse(SavedAccounts savedAccounts){
         return AccountResponse.builder()
-            .accountId(savedAccounts.getId())
+            .accountId(savedAccounts.getAccount().getId())
             .accountNumber(savedAccounts.getAccount().getAccountNumber())
             .ownerName(savedAccounts.getAccount().getOwnerName())
             .build();
