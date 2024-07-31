@@ -82,11 +82,21 @@ public class TransactionController {
         Transactions transaction;
         try {
             transaction = transactionService.getTransaction(transactionId);
+            TransactionsResponseDTO responseDTO = TransactionsResponseDTO.builder()
+                    .transactionId(transaction.getTransactionId())
+                    .accountId(transaction.getAccountId().getId())
+                    .beneficiaryAccount(transaction.getBeneficiaryAccount().getId())
+                    .amount(transaction.getAmount())
+                    .transactionDate(transaction.getTransactionDate())
+                    .note(transaction.getNote())
+                    .adminFee(transaction.getAdminFee())
+                    .total(transaction.getAdminFee() + transaction.getAmount())
+                    .build();
             response.put("status", "transaction success");
-            response.put("data", modelMapper.map(transaction, TransactionsResponseDTO.class));
+            response.put("data", responseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            response.put("status", "error, transaction not found");
+            response.put("status", e.getLocalizedMessage());
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
