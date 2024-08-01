@@ -18,7 +18,7 @@ public class TransactionMapper {
         return TransactionsResponseDTO.builder()
                 .transactionId(transactions.getTransactionId())
                 .accountId(transactions.getAccountId().getId())
-                .beneficiaryAccount(transactions.getBeneficiaryAccount().getId())
+                .beneficiaryAccount(toAccountResponse(transactions.getBeneficiaryAccount()))
                 .amount(transactions.getAmount())
                 .adminFee(transactions.getAdminFee())
                 .transactionDate(transactions.getTransactionDate())
