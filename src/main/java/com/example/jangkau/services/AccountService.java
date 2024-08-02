@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface AccountService {
     List<Account> getAllAccounts();
 
-    Account getAccountById(String id);
+    Account getAccountByUserId(UUID id);
     
     Account getAccountByAccountId(UUID id);
 

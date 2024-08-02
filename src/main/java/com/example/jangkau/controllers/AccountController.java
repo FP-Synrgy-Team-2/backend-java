@@ -59,9 +59,11 @@ public class AccountController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getBankAccount(@PathVariable("user_id") String id) {
         if (id.isEmpty()) return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
-        Account account = null;
+        UUID uuid;
+        Account account;
         try {
-            account = accountService.getAccountById(id);
+            uuid = UUID.fromString(id);
+            account = accountService.getAccountByUserId(uuid);
         } catch (Exception e) {
             return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
         }

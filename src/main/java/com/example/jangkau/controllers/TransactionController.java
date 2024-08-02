@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.jangkau.dto.base.BaseResponse;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
 
@@ -71,8 +72,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{transaction_id}")
-    public ResponseEntity<Map<String, Object>> getTransactionStatus(@PathVariable("transaction_id") String transactionId){
-        Map<String, Object> response = new LinkedHashMap<>();
+    public ResponseEntity<?> getTransactionStatus(@PathVariable("transaction_id") String transactionId){
         Map<String, Object> data = new LinkedHashMap<>();
         Transactions transaction;
         try {
@@ -85,13 +85,10 @@ public class TransactionController {
             data.put("note", transaction.getNote());
             data.put("admin_fee", transaction.getAdminFee());
             data.put("total", transaction.getAdminFee() + transaction.getAmount());
-
-            response.put("status", "success");
-            response.put("data", data);
+            return ResponseEntity.ok(BaseResponse.success(data, "Transaction detail retrieved"));
         } catch (RuntimeException e) {
-            response.put("status", e.getLocalizedMessage());
+            return ResponseEntity.ok(BaseResponse.failure(404, "transaction not found"));
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/history/{user_id}")
