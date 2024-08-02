@@ -17,7 +17,7 @@ public class LoginResponse {
     private String accountNumber;
     private Object accessToken;
     private Object tokenType;
-    @JsonIgnore
+//    @JsonIgnore
     private Object refreshToken;
     private Object expiresIn;
     private Object scope;

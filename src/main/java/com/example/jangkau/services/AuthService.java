@@ -14,7 +14,7 @@ public interface AuthService {
 
     LoginResponse login(LoginRequest request, HttpServletResponse response);
 
-    void logout(HttpServletResponse response);
+//    void logout(HttpServletResponse response);
 
     Object sendEmailOtp(EmailRequest request, String subject);
 
