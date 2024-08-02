@@ -12,6 +12,7 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 public class CorsOriginConfiguration implements Filter {
+
     @Override
     public void init(FilterConfig filterConfig) {}
 
@@ -26,7 +27,7 @@ public class CorsOriginConfiguration implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, X-Auth-Token, Data");
-        response.setHeader("Access-control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
