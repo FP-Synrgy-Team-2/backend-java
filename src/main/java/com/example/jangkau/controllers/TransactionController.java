@@ -1,10 +1,7 @@
 package com.example.jangkau.controllers;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.jangkau.models.Account;
@@ -75,25 +72,23 @@ public class TransactionController {
 
     @GetMapping("/{transaction_id}")
     public ResponseEntity<Map<String, Object>> getTransactionStatus(@PathVariable("transaction_id") String transactionId){
-        Map<String, Object> response = new HashMap<>();
-
+        Map<String, Object> response = new LinkedHashMap<>();
+        Map<String, Object> data = new LinkedHashMap<>();
         Transactions transaction;
         try {
             transaction = transactionService.getTransaction(transactionId);
-            TransactionsResponseDTO responseDTO = TransactionsResponseDTO.builder()
-                    .transactionId(transaction.getTransactionId())
-                    .accountId(transaction.getAccountId().getId())
-                    .beneficiaryAccount(transaction.getBeneficiaryAccount().getId())
-                    .amount(transaction.getAmount())
-                    .transactionDate(transaction.getTransactionDate())
-                    .note(transaction.getNote())
-                    .adminFee(transaction.getAdminFee())
-                    .total(transaction.getAdminFee() + transaction.getAmount())
-                    .build();
-            response.put("status", "transaction success");
-            response.put("data", responseDTO);
+            data.put("transaction_id", transaction.getTransactionId());
+            data.put("account_id", transaction.getAccountId().getId());
+            data.put("beneficiary_id", transaction.getBeneficiaryAccount().getId());
+            data.put("amount", transaction.getAmount());
+            data.put("date", transaction.getTransactionDate());
+            data.put("note", transaction.getNote());
+            data.put("admin_fee", transaction.getAdminFee());
+            data.put("total", transaction.getAdminFee() + transaction.getAmount());
+
+            response.put("status", "success");
+            response.put("data", data);
         } catch (RuntimeException e) {
-            e.printStackTrace();
             response.put("status", e.getLocalizedMessage());
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
