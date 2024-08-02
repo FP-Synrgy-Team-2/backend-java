@@ -79,6 +79,7 @@ public class AccountController {
 
     @GetMapping("/account/{account_number}")
     public ResponseEntity<?> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
+        if (accountNumber.isEmpty()) return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         Map<String, Object> data = new HashMap<>();
         if (account != null) {
