@@ -31,12 +31,6 @@ public class AuthController {
         return ResponseEntity.ok(baseResponse);
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<BaseResponse<String>> logout(HttpServletResponse response) {
-//        authService.logout(response);
-//        return ResponseEntity.ok(BaseResponse.success("Logged out successfully", "Success Logout"));
-//    }
-
     @PostMapping("/otp")
     public ResponseEntity<?> sendEmailOtp(@RequestBody EmailRequest req) {
         return ResponseEntity.ok(BaseResponse.success(authService.sendEmailOtp(req, "Register"), "Success Send OTP"));

@@ -9,17 +9,9 @@ import com.example.jangkau.mapper.AuthMapper;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.repositories.UserRepository;
-import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RoleRepository;
 import com.example.jangkau.services.AuthService;
 import com.example.jangkau.services.ValidationService;
-import com.example.jangkau.services.oauth.Oauth2UserDetailService;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.oauth2.Oauth2;
-import com.google.api.services.oauth2.model.Userinfoplus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,7 +26,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Cookie;
 import java.security.Principal;
 import java.util.*;
 
@@ -134,68 +125,11 @@ public class AuthServiceImpl implements AuthService {
         if (apiResponse.getStatusCode() == HttpStatus.OK) {
             LoginResponse loginResponse = authMapper.toLoginResponse(apiResponse, checkUser);
 
-//            Cookie refreshTokenCookie = new Cookie("refresh_token", (String) loginResponse.getRefreshToken());
-//            refreshTokenCookie.setHttpOnly(true);
-//            refreshTokenCookie.setSecure(true);
-//            refreshTokenCookie.setPath("/");
-//            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
-//            refreshTokenCookie.setComment("SameSite=None");
-//
-//            response.addCookie(refreshTokenCookie);
-
             return loginResponse;
         } else {
             throw new ResponseStatusException(apiResponse.getStatusCode(), "User not found");
         }
     }
-
-//@Override
-//public LoginResponse login(LoginRequest request, HttpServletResponse response) {
-//    validationService.validate(request);
-//    User checkUser = userRepository.findByUsername(request.getUsername());
-//
-//    if ((checkUser != null) && (encoder.matches(request.getPassword(), checkUser.getPassword()))) {
-//        if (!checkUser.isEnabled()) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not enabled");
-//        }
-//    }
-//    if (checkUser == null) {
-//        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-//    }
-//    if (!(encoder.matches(request.getPassword(), checkUser.getPassword()))) {
-//        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong password");
-//    }
-//
-//    String url = baseUrl + "/oauth/token?username=" + checkUser.getUsername() +
-//            "&password=" + request.getPassword() +
-//            "&grant_type=password" +
-//            "&client_id=my-client-web" +
-//            "&client_secret=password";
-//    ResponseEntity<Map> apiResponse = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
-//            ParameterizedTypeReference<Map>() {
-//            }
-//    );
-//
-//    if (apiResponse.getStatusCode() == HttpStatus.OK) {
-//        LoginResponse loginResponse = authMapper.toLoginResponse(apiResponse, checkUser);
-//
-//        String refreshToken = (String) loginResponse.getRefreshToken();
-//        String cookieValue = "refresh_token=" + refreshToken + "; SameSite=None; Secure; HttpOnly; Path=/; Max-Age=" + (60 * 60 * 24 * 7);
-//
-//        response.setHeader("Set-Cookie", cookieValue);
-//
-//        return loginResponse;
-//    } else {
-//        throw new ResponseStatusException(apiResponse.getStatusCode(), "User not found");
-//    }
-//}
-
-//    @Override
-//    public void logout(HttpServletResponse response) {
-////        String cookieValue = "refresh_token=; HttpOnly; Secure; Path=/; Max-Age=0; SameSite=None";
-////
-////        response.addHeader("Set-Cookie", cookieValue);
-//    }
 
     @Override
     public Object sendEmailOtp(EmailRequest request, String subject) {

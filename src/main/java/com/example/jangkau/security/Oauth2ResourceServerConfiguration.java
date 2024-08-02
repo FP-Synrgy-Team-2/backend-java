@@ -63,9 +63,5 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .authenticated()
                 .and()
                 .formLogin().permitAll();
-//                .and()
-//                .sessionManagement()
-//                .sessionFixation().none()
-//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 }
