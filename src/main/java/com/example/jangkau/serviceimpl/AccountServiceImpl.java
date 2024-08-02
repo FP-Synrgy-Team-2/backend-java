@@ -44,16 +44,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getAccountById(String id) {
-        UUID uuid = null;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        Optional<User> user = userRepository.findById(uuid);
-        if (user.isPresent()) return accountRepository.findByUser(user.get()).orElse(null);
-        else throw new RuntimeException("User not found");
+    public Account getAccountByUserId(UUID id) {
+        User user = userRepository.findById(id).orElse(null);
+        return accountRepository.findByUser(user).orElse(null);
     }
 
     @Override
@@ -64,8 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByAccountNumber(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber).orElse(null);
-        return account;
+        return accountRepository.findByAccountNumber(accountNumber).orElse(null);
     }
 
 
