@@ -14,7 +14,7 @@ import lombok.Data;
 public class TransactionsResponseDTO {
     private UUID transactionId;
     private UUID accountId;
-    private UUID beneficiaryAccount;
+    private AccountResponse beneficiaryAccount;
     private double amount;
     private Date transactionDate;
     private String note;
