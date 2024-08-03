@@ -44,9 +44,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private ValidationService validationService;
 
-    @Autowired
-    private TokenStore tokenStore;
-
     @Value("${BASEURL}")
     private String baseUrl;
 
