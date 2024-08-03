@@ -23,13 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/bank-accounts")
@@ -60,7 +58,15 @@ public class AccountController {
 
     @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getBankAccount(@PathVariable("user_id") String id) {
-        Account account = accountService.getAccountById(id);
+        if (id.isEmpty()) return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
+        UUID uuid;
+        Account account;
+        try {
+            uuid = UUID.fromString(id);
+            account = accountService.getAccountByUserId(uuid);
+        } catch (Exception e) {
+            return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
+        }
         Map<String, Object> data = new HashMap<>();
         if (account != null) {
             data.put("account_id", account.getId());
@@ -69,12 +75,13 @@ public class AccountController {
             data.put("balance", account.getBalance());
             return ResponseEntity.ok(BaseResponse.success(data, "Account successfully retrieved."));
         } else {
-            return ResponseEntity.ok(BaseResponse.failure(403, "Account not found."));
+            return ResponseEntity.ok(BaseResponse.failure(404, "Account not found."));
         }
     }
 
     @GetMapping("/account/{account_number}")
     public ResponseEntity<?> getBankAccountByNumber(@PathVariable("account_number") String accountNumber) {
+        if (accountNumber.isEmpty()) return ResponseEntity.ok(BaseResponse.failure(404, "Account not found"));
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         Map<String, Object> data = new HashMap<>();
         if (account != null) {
@@ -84,7 +91,7 @@ public class AccountController {
             data.put("balance", account.getBalance());
             return ResponseEntity.ok(BaseResponse.success(data, "Account successfully retrieved."));
         } else {
-            return ResponseEntity.ok(BaseResponse.failure(403, "Account not found."));
+            return ResponseEntity.ok(BaseResponse.failure(404, "Account not found."));
         }
     }
 

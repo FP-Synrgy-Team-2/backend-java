@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,11 +44,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getAccountById(String id) {
-        UUID uuid = UUID.fromString(id);
-        User user = userRepository.findById(uuid).orElse(null);
-        Account account = accountRepository.findByUser(user).orElse(null);
-        return account;
+    public Account getAccountByUserId(UUID id) {
+        User user = userRepository.findById(id).orElse(null);
+        return accountRepository.findByUser(user).orElse(null);
     }
 
     @Override
@@ -58,8 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByAccountNumber(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber).orElse(null);
-        return account;
+        return accountRepository.findByAccountNumber(accountNumber).orElse(null);
     }
 
 
