@@ -24,6 +24,7 @@ import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
 import com.example.jangkau.dto.UserResponse;
+import com.example.jangkau.mapper.TransactionMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
@@ -43,6 +44,7 @@ public class TransactionController {
     @Autowired ModelMapper modelMapper;
     @Autowired SavedAccountService savedAccountService;
     @Autowired UserService userService;
+    @Autowired TransactionMapper transactionMapper;
 
 
     @PostMapping()
@@ -80,16 +82,7 @@ public class TransactionController {
         Transactions transaction;
         try {
             transaction = transactionService.getTransaction(transactionId);
-            TransactionsResponseDTO responseDTO = TransactionsResponseDTO.builder()
-                    .transactionId(transaction.getTransactionId())
-                    .accountId(transaction.getAccountId().getId())
-                    .beneficiaryAccount(transaction.getBeneficiaryAccount().getId())
-                    .amount(transaction.getAmount())
-                    .transactionDate(transaction.getTransactionDate())
-                    .note(transaction.getNote())
-                    .adminFee(transaction.getAdminFee())
-                    .total(transaction.getAdminFee() + transaction.getAmount())
-                    .build();
+            TransactionsResponseDTO responseDTO = transactionMapper.toTransactionResponse(transaction);
             response.put("status", "transaction success");
             response.put("data", responseDTO);
         } catch (RuntimeException e) {
