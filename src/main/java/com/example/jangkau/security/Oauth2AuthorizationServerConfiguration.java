@@ -40,9 +40,6 @@ public class Oauth2AuthorizationServerConfiguration extends AuthorizationServerC
     @Autowired
     private TokenStore tokenStore;
 
-    /**
-     * Change server config, password encoder etc.
-     */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer server) throws Exception {
         server.allowFormAuthenticationForClients()
@@ -50,24 +47,16 @@ public class Oauth2AuthorizationServerConfiguration extends AuthorizationServerC
         ;
     }
 
-    /**
-     * Change client details etc.
-     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.withClientDetails(clientDetailsService);
     }
-
-    /**
-     * Change user details etc.
-     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .tokenStore(tokenStore)
                 .accessTokenConverter(accessTokenConverter)
-                .userDetailsService(userDetailsService)
-        ;
+                .userDetailsService(userDetailsService);
     }
-}
 
+}

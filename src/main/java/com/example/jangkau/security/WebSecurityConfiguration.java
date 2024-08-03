@@ -78,5 +78,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         return services;
     }
-
 }
