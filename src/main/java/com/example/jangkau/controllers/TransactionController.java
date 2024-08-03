@@ -22,6 +22,7 @@ import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
 import com.example.jangkau.dto.TransactionsResponseDTO;
 import com.example.jangkau.dto.UserResponse;
+import com.example.jangkau.mapper.TransactionMapper;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
@@ -41,6 +42,7 @@ public class TransactionController {
     @Autowired ModelMapper modelMapper;
     @Autowired SavedAccountService savedAccountService;
     @Autowired UserService userService;
+    @Autowired TransactionMapper transactionMapper;
 
 
     @PostMapping()
@@ -77,15 +79,10 @@ public class TransactionController {
         Transactions transaction;
         try {
             transaction = transactionService.getTransaction(transactionId);
-            data.put("transaction_id", transaction.getTransactionId());
-            data.put("account_id", transaction.getAccountId().getId());
-            data.put("beneficiary_id", transaction.getBeneficiaryAccount().getId());
-            data.put("amount", transaction.getAmount());
-            data.put("date", transaction.getTransactionDate());
-            data.put("note", transaction.getNote());
-            data.put("admin_fee", transaction.getAdminFee());
-            data.put("total", transaction.getAdminFee() + transaction.getAmount());
-            return ResponseEntity.ok(BaseResponse.success(data, "Transaction detail retrieved"));
+
+            TransactionsResponseDTO responseDTO = transactionMapper.toTransactionResponse(transaction);
+            response.put("status", "transaction success");
+            response.put("data", responseDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.ok(BaseResponse.failure(404, "transaction not found"));
         }
