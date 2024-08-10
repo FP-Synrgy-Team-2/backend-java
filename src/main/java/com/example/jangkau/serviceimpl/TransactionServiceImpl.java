@@ -2,9 +2,11 @@ package com.example.jangkau.serviceimpl;
 
 import java.util.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
@@ -93,8 +95,16 @@ public class TransactionServiceImpl implements TransactionService{
 
             if (requestDTO == null) {
                 transactions = transactionRepository.findAllTransactions(account.getId());
+            }else if (requestDTO.getStartDate() == requestDTO.getEndDate()) {
+                transactions = transactionRepository.findNowTransactions(account.getId(), requestDTO.getStartDate());
             }else{
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), requestDTO.getEndDate());
+                Date endDate = requestDTO.getEndDate();
+                LocalDate localEndDate = endDate.toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDate();
+                localEndDate = localEndDate.plusDays(1);
+                endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), endDate);
             }
             List<TransactionsHistoryDTO> histories = transactions
                 .stream()
