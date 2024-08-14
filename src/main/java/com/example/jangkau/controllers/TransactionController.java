@@ -100,9 +100,11 @@ public class TransactionController {
         List<TransactionsHistoryDTO> histories = transactionService.getTransactionByDate(userId, request);
         response.put("status", "success");
         if (histories.isEmpty()) {
+            response.put("code", 404);
             response.put("data", null);
             response.put("message", "No Transactions");
-        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } else {
             response.put("data", histories);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

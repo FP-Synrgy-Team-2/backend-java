@@ -96,7 +96,7 @@ public class TransactionServiceImpl implements TransactionService{
 
             if (requestDTO == null) {
                 transactions = transactionRepository.findAllTransactions(account.getId());
-            } else if (requestDTO.getStartDate() == requestDTO.getEndDate()) {
+            } else if (requestDTO.getStartDate().equals(requestDTO.getEndDate())) {
                 transactions = transactionRepository.findNowTransactions(account.getId(), requestDTO.getStartDate());
             } else {
                 Date endDate = requestDTO.getEndDate();
@@ -105,7 +105,7 @@ public class TransactionServiceImpl implements TransactionService{
                         .toLocalDate();
                 localEndDate = localEndDate.plusDays(1);
                 endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                transactions = transactionRepository.findAllByAccountIdOrBeneficiaryAccountAndTransactionDateBetween(account, account, requestDTO.getStartDate(), endDate);
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), endDate);
             }
             List<TransactionsHistoryDTO> histories = transactions
                     .stream()
@@ -113,7 +113,7 @@ public class TransactionServiceImpl implements TransactionService{
                     .collect(Collectors.toList());
             return histories;
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request, does id match the UUID pattern?");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         } catch (ResponseStatusException e) {
             throw e; 
         } catch (Exception e) {
