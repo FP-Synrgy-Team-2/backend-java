@@ -31,7 +31,7 @@ import java.util.List;
 @Service
 public class DatabaseSeeder implements ApplicationRunner {
 
-    private Logger logger = LoggerFactory.getLogger(DatabaseSeeder.class);
+//    private Logger logger = LoggerFactory.getLogger(DatabaseSeeder.class);
 
     @Autowired
     private PasswordEncoder encoder;
@@ -123,7 +123,7 @@ public class DatabaseSeeder implements ApplicationRunner {
             if (null == oldClient) {
                 oldClient = new Client();
                 oldClient.setClientId(clientName);
-                oldClient.setAccessTokenValiditySeconds(600);
+                oldClient.setAccessTokenValiditySeconds(3600);
                 oldClient.setRefreshTokenValiditySeconds(7257600);
                 oldClient.setGrantTypes("password refresh_token authorization_code");
                 oldClient.setClientSecret(encoder.encode("password"));
@@ -197,24 +197,24 @@ public class DatabaseSeeder implements ApplicationRunner {
         }
     }
 
-    @Transactional
-    public void insertTransactions(User sender, User recipient, Double amount, Date transactionDate) {
-        Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
-        Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
-        if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
-        else {
-            Transactions transactions = Transactions.builder()
-                    .accountId(sourceAccount)
-                    .beneficiaryAccount(recipientAccount)
-                    .amount(amount)
-                    .transactionDate(transactionDate)
-                    .note("db seeder test")
-                    .build();
-            transactionRepository.save(transactions);
-            sourceAccount.setBalance(sourceAccount.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
-            recipientAccount.setBalance(recipientAccount.getBalance() + transactions.getAmount());
-            accountRepository.save(sourceAccount);
-            accountRepository.save(recipientAccount);
-        }
-    }
+//    @Transactional
+//    public void insertTransactions(User sender, User recipient, Double amount, Date transactionDate) {
+//        Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
+//        Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
+//        if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
+//        else {
+//            Transactions transactions = Transactions.builder()
+//                    .accountId(sourceAccount)
+//                    .beneficiaryAccount(recipientAccount)
+//                    .amount(amount)
+//                    .transactionDate(transactionDate)
+//                    .note("db seeder test")
+//                    .build();
+//            transactionRepository.save(transactions);
+//            sourceAccount.setBalance(sourceAccount.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
+//            recipientAccount.setBalance(recipientAccount.getBalance() + transactions.getAmount());
+//            accountRepository.save(sourceAccount);
+//            accountRepository.save(recipientAccount);
+//        }
+//    }
 }

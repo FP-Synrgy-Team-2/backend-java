@@ -36,11 +36,6 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponse.success(authService.sendEmailOtp(req, "Register"), "Success Send OTP"));
     }
 
-    @GetMapping("/otp/{token}")
-    public ResponseEntity<?> confirmOtp(@PathVariable(value = "token") String tokenOtp) {
-        return ResponseEntity.ok(BaseResponse.success(authService.confirmOtp(tokenOtp), "Success Send OTP"));
-    }
-
     @PostMapping("/password")
     public ResponseEntity<?> sendEmailForgetPassword(@RequestBody EmailRequest req) {
         return ResponseEntity.ok(BaseResponse.success(authService.sendEmailOtp(req, "Forget Password"), "Success Send OTP Forget Password"));

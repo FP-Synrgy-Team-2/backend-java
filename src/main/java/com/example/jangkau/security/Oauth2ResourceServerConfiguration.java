@@ -51,7 +51,6 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .antMatchers(HttpMethod.GET, "/transactions").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/bank-accounts/user/{userId}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/saved-accounts").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.POST, "/logout").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/users").hasAnyAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.POST, "/users").hasAnyAuthority("ROLE_ADMIN")
