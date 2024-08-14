@@ -32,7 +32,7 @@ import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.SavedAccountService;
 import com.example.jangkau.services.TransactionService;
 import com.example.jangkau.services.UserService;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -93,21 +93,20 @@ public class TransactionController {
 
     @PostMapping("/history/{user_id}")
     public ResponseEntity<Map<String, Object>> getHistoriesByDate(
-            @PathVariable("user_id") UUID userId, 
+            @PathVariable("user_id") String userId,
             @RequestBody(required = false) DateFilterRequestDTO request){
 
         Map<String, Object> response = new HashMap<>();
         List<TransactionsHistoryDTO> histories = transactionService.getTransactionByDate(userId, request);
         response.put("status", "success");
         if (histories.isEmpty()) {
+            response.put("code", 404);
             response.put("data", null);
             response.put("message", "No Transactions");
-        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } else {
             response.put("data", histories);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
-
 }
