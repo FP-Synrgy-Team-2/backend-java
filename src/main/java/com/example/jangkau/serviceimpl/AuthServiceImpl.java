@@ -165,27 +165,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Object confirmOtp(String otp) {
-        User user = userRepository.findByOtp(otp);
-        if (null == user) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "OTP Not Found");
-        }
-        if (user.isEnabled()) {
-            throw new ResponseStatusException(HttpStatus.OK, "Account Already Active, Please login!");
-        }
-        String today = config.convertDateToString(new Date());
-
-        String dateToken = config.convertDateToString(user.getOtpExpiredDate());
-        if (Long.parseLong(today) > Long.parseLong(dateToken)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Your token is expired. Please Get token again.");
-        }
-        user.setEnabled(true);
-        userRepository.save(user);
-
-        return "Success, Please login!";
-    }
-
-    @Override
     public Object checkOtpValid(OtpRequest otp) {
         validationService.validate(otp);
         if (otp.getOtp() == null)

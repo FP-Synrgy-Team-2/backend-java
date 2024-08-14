@@ -12,16 +12,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class JangkauApplication {
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.load();
-
-		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
-		System.setProperty("POSTGRESQL_USER", dotenv.get("POSTGRESQL_USER"));
-		System.setProperty("POSTGRESQL_PASS", dotenv.get("POSTGRESQL_PASS"));
-
-		// Debugging log
-		System.out.println("DATABASE_URL: " + dotenv.get("DATABASE_URL"));
-		System.out.println("POSTGRESQL_USER: " + dotenv.get("POSTGRESQL_USER"));
-		System.out.println("POSTGRESQL_PASS: " + dotenv.get("POSTGRESQL_PASS"));
+//		Dotenv dotenv = Dotenv.load();
+//
+//		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
+//		System.setProperty("POSTGRESQL_USER", dotenv.get("POSTGRESQL_USER"));
+//		System.setProperty("POSTGRESQL_PASS", dotenv.get("POSTGRESQL_PASS"));
 
 		SpringApplication.run(JangkauApplication.class, args);
 	}
