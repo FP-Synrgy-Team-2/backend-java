@@ -32,7 +32,7 @@ import com.example.jangkau.services.AccountService;
 import com.example.jangkau.services.SavedAccountService;
 import com.example.jangkau.services.TransactionService;
 import com.example.jangkau.services.UserService;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -93,7 +93,7 @@ public class TransactionController {
 
     @PostMapping("/history/{user_id}")
     public ResponseEntity<Map<String, Object>> getHistoriesByDate(
-            @PathVariable("user_id") UUID userId, 
+            @PathVariable("user_id") String userId,
             @RequestBody(required = false) DateFilterRequestDTO request){
 
         Map<String, Object> response = new HashMap<>();
