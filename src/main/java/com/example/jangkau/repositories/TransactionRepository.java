@@ -28,6 +28,8 @@ public interface TransactionRepository extends JpaRepository<Transactions, UUID>
         "where (account_id = ?1 or beneficiary_account = ?1) and transaction_date between ?2 and ?3 and deleted_date is null\n"+
         "order by transaction_date DESC", nativeQuery = true)
     List<Transactions> findAllTransactionsByDate(UUID accountId, Date startDate, Date endDate);
+
+    List<Transactions> findAllByAccountIdOrBeneficiaryAccountAndTransactionDateBetween(Account accountId, Account beneficiaryAccount, Date transactionDate, Date transactionDate2);
     
     @Query(value = "select * from transactions\n"+
     "where (account_id = ?1 or beneficiary_account = ?1) and deleted_date is null\n"+

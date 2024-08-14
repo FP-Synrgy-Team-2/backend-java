@@ -104,7 +104,7 @@ public class TransactionServiceImpl implements TransactionService{
                                         .toLocalDate();
                 localEndDate = localEndDate.plusDays(1);
                 endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), endDate);
+                transactions = transactionRepository.findAllByAccountIdOrBeneficiaryAccountAndTransactionDateBetween(account, account, requestDTO.getStartDate(), endDate);
             }
             List<TransactionsHistoryDTO> histories = transactions
                 .stream()
