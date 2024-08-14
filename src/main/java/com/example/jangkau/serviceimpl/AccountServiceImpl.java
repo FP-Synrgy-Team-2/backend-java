@@ -33,7 +33,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private PasswordEncoder encoder;
-    @Autowired TransactionRepository transactionRepository;
     @Autowired UserRepository userRepository;
     @Autowired PasswordEncoder passwordEncoder;
 

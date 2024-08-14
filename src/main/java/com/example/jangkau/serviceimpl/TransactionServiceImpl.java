@@ -2,9 +2,11 @@ package com.example.jangkau.serviceimpl;
 
 import java.util.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
@@ -82,25 +84,36 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<TransactionsHistoryDTO> getTransactionByDate(UUID userId, DateFilterRequestDTO requestDTO) {
+    public List<TransactionsHistoryDTO> getTransactionByDate(String userId, DateFilterRequestDTO requestDTO) {
         try {
-            User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-        
+            UUID uuid = UUID.fromString(userId);
+            User user = userRepository.findById(uuid)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
             Account account = accountRepository.findByUser(user)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
             List<Transactions> transactions;
 
             if (requestDTO == null) {
                 transactions = transactionRepository.findAllTransactions(account.getId());
-            }else{
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), requestDTO.getEndDate());
+            } else if (requestDTO.getStartDate().equals(requestDTO.getEndDate())) {
+                transactions = transactionRepository.findNowTransactions(account.getId(), requestDTO.getStartDate());
+            } else {
+                Date endDate = requestDTO.getEndDate();
+                LocalDate localEndDate = endDate.toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                localEndDate = localEndDate.plusDays(1);
+                endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), endDate);
             }
             List<TransactionsHistoryDTO> histories = transactions
-                .stream()
-                .map(transaction -> transactionMapper.toTransactionsHistory(transaction, account.getId()))
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(transaction -> transactionMapper.toTransactionsHistory(transaction, account.getId()))
+                    .collect(Collectors.toList());
             return histories;
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         } catch (ResponseStatusException e) {
             throw e; 
         } catch (Exception e) {
