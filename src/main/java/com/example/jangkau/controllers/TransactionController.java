@@ -56,8 +56,8 @@ public class TransactionController {
         Map<String, Object> response = new HashMap<>();
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
         if (newTransaction != null) {
-            Account accountId = accountService.getAccountByAccountId(newTransaction.getAccountId());
-            Account beneficiary = accountService.getAccountByAccountId(newTransaction.getBeneficiaryAccount().getAccountId());
+            Account accountId = accountService.getAccountByAccountId(newTransaction.getTo().getAccountId());
+            Account beneficiary = accountService.getAccountByAccountId(newTransaction.getFrom().getAccountId());
 
 
             Transactions trans = modelMapper.map(newTransaction, Transactions.class);

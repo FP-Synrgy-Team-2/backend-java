@@ -12,8 +12,6 @@ import org.hibernate.annotations.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.example.jangkau.models.base.BaseDate;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.*;
 

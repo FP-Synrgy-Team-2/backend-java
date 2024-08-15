@@ -24,4 +24,7 @@ public class TransactionsHistoryDTO {
     private Date transactionDate;
     private double total;
     private String type;
+    private double amount;
+    private String note;
+    private double adminFee;
 }
