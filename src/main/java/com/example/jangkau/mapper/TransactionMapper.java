@@ -17,8 +17,8 @@ public class TransactionMapper {
     public TransactionsResponseDTO toTransactionResponse(Transactions transactions) {
         return TransactionsResponseDTO.builder()
                 .transactionId(transactions.getTransactionId())
-                .accountId(transactions.getAccountId().getId())
-                .beneficiaryAccount(toAccountResponse(transactions.getBeneficiaryAccount()))
+                .from(toAccountResponse(transactions.getAccountId()))
+                .to(toAccountResponse(transactions.getBeneficiaryAccount()))
                 .amount(transactions.getAmount())
                 .adminFee(transactions.getAdminFee())
                 .transactionDate(transactions.getTransactionDate())
@@ -34,6 +34,9 @@ public class TransactionMapper {
             .transactionDate(transactions.getTransactionDate())
             .from(toAccountResponse(transactions.getAccountId()))
             .to(toAccountResponse(transactions.getBeneficiaryAccount()))
+            .amount(transactions.getAmount())
+            .adminFee(transactions.getAdminFee())
+            .note(transactions.getNote())
             .build();
         
         if (accountId == transactions.getAccountId().getId()) {
