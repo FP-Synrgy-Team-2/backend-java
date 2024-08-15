@@ -13,8 +13,8 @@ import lombok.Data;
 @Builder
 public class TransactionsResponseDTO {
     private UUID transactionId;
-    private UUID accountId;
-    private AccountResponse beneficiaryAccount;
+    private AccountResponse from;
+    private AccountResponse to;
     private double amount;
     private Date transactionDate;
     private String note;

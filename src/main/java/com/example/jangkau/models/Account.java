@@ -50,6 +50,9 @@ public class Account extends BaseDate {
 
     private String pin;
 
+    @OneToOne(mappedBy = "account")
+    private Merchant merchant;
+
     @PrePersist
     public void generateAccountNumber() {
         if (this.accountNumber == null || this.accountNumber.isEmpty()) {

@@ -1,16 +1,14 @@
 package com.example.jangkau.models;
 
-import com.example.jangkau.utils.NumberGeneratorUtil;
+
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.example.jangkau.models.base.BaseDate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
-import java.util.List;
+
 import java.util.UUID;
 
 @Getter
