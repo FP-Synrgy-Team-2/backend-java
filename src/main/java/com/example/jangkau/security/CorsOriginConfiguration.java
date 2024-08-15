@@ -15,11 +15,6 @@ import java.util.List;
 @Component
 public class CorsOriginConfiguration implements Filter {
 
-//    private static final List<String> ALLOWED_ORIGINS = Arrays.asList(
-//            "",
-//            "https://jangkau-delta.vercel.app"
-//    );
-
     @Override
     public void init(FilterConfig filterConfig) {}
 
@@ -31,16 +26,10 @@ public class CorsOriginConfiguration implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
-//        String origin = request.getHeader("Origin");
-//        if (ALLOWED_ORIGINS.contains(origin)) {
-//            response.setHeader("Access-Control-Allow-Origin", origin);
-//        }
-
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, X-Auth-Token, Data");
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
