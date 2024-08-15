@@ -22,7 +22,6 @@ public class OAuthController {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-//    @CookieValue
     @GetMapping()
     public ResponseEntity<Map> getNewAccessToken(@RequestParam("refresh_token") String refreshToken) {
         String url = authUrl + "/oauth/token?grant_type=refresh_token&refresh_token=" + refreshToken +

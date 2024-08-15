@@ -60,11 +60,11 @@
 <body>
 <header>
     <h1>API Contract - Jangkau</h1>
-    <p><strong>Base Url : https://tense-margy-jangkau-a8ec8afe.koyeb.app/</strong></p>
+    <p><strong>Base Url : https://jangkau-65einymbia-uc.a.run.app/api</strong></p>
 </header>
 <main>
     <section id="register">
-        <h2>/api/auth/register</h2>
+        <h2>/auth/register</h2>
         <h3>POST</h3>
         <p>Summary: Mendaftarkan pengguna baru</p>
         <p>Request Body:
@@ -100,7 +100,7 @@
         </p>
     </section>
     <section id="auth-login">
-        <h2>/api/auth/login</h2>
+        <h2>/auth/login</h2>
         <h3>POST</h3>
         <p>Summary: Melakukan login</p>
         <p>Description: Untuk masuk ke dalam sistem</p>
@@ -128,7 +128,7 @@
         </p>
     </section>
     <section id="refresh-token">
-        <h2>/api/refresh-token</h2>
+        <h2>/refresh-token</h2>
         <h3>GET</h3>
         <p>Summary: Mengambil akses token baru menggunakan refresh token</p>
         <p>Request Param:
@@ -152,7 +152,7 @@
         </p>
     </section>
     <section id="forgot-password">
-        <h2>/api/auth/password</h2>
+        <h2>/auth/password</h2>
         <h3>POST</h3>
         <p>Summary: Mengirim email untuk reset password</p>
         <p>Request Body:
@@ -175,7 +175,7 @@
         </p>
     </section>
     <section id="verify-otp">
-        <h2>/api/auth/password/otp</h2>
+        <h2>/auth/password/otp</h2>
         <h3>POST</h3>
         <p>Summary: Verifikasi OTP untuk reset password</p>
         <p>Request Body:
@@ -198,14 +198,14 @@
         </p>
     </section>
     <section id="reset-password">
-        <h2>/api/auth/password/reset</h2>
+        <h2>/auth/password</h2>
         <h3>PUT</h3>
         <p>Summary: Reset password</p>
         <p>Request Body:
         <pre><code>{
   "email_address": "johndoe@example.com",
   "otp": "123456",
-  "newPassword": "NewPassword123!"
+  "new_password": "NewPassword123"
 }</code></pre>
         </p>
         <p>Responses:
@@ -223,31 +223,8 @@
         </p>
     </section>
 
-<!--    <section id="logout">-->
-<!--        <h2>/api/auth/logout</h2>-->
-<!--        <h3>POST</h3>-->
-<!--        <p>Summary: Menghapus refresh token dari cookies dan logout pengguna</p>-->
-<!--        <p>Description: Endpoint ini akan menghapus refresh token dari cookies untuk melakukan logout.</p>-->
-<!--        <p>Request Headers:-->
-<!--        <pre><code>{-->
-<!--  "Content-Type": "application/json"-->
-<!--}</code></pre>-->
-<!--        </p>-->
-<!--        <p>Responses:-->
-<!--        <ul>-->
-<!--            <li>200: Logout Berhasil!-->
-<!--                <pre><code>{-->
-<!--  "status": "success",-->
-<!--  "message": "Logged out successfully"-->
-<!--}</code></pre>-->
-<!--            </li>-->
-<!--            <li>401: Unauthorized (jika sesi tidak valid atau pengguna tidak terautentikasi)</li>-->
-<!--        </ul>-->
-<!--        </p>-->
-<!--    </section>-->
-
     <section id="bank-accounts-pin-validation">
-        <h2>/api/bank-accounts/pin-validation</h2>
+        <h2>/bank-accounts/pin-validation</h2>
         <h3>POST</h3>
         <p>Summary: Melakukan validasi pin</p>
         <p>Description: Data pengguna baru yang akan ditambahkan.</p>
@@ -273,7 +250,7 @@
     </section>
 
     <section id="user-id">
-        <h2>/api/users/{id}</h2>
+        <h2>/users/{id}</h2>
         <h3>GET</h3>
         <p>Summary: Mendapatkan informasi user berdasarkan ID</p>
         <p>Parameters:
@@ -298,7 +275,7 @@
     </section>
 
     <section id="bank-accounts">
-        <h2>/api/bank-accounts</h2>
+        <h2>/bank-accounts</h2>
         <h3>GET</h3>
         <p>Summary: Mendapatkan daftar semua bank account</p>
         <p>Responses:
@@ -318,7 +295,7 @@
     </section>
 
     <section id="bank-accounts-user-id">
-        <h2>/api/bank-accounts/user/{user_id}</h2>
+        <h2>/bank-accounts/user/{user_id}</h2>
         <p>Summary: Mendapatkan informasi bank account user berdasarkan User ID</p>
         <p>Parameters:
         <pre><code>{
@@ -341,7 +318,7 @@
     </section>
 
     <section id="bank-accounts-account-number">
-        <h2>/api/bank-accounts/account/{account_number}</h2>
+        <h2>/bank-accounts/account/{account_number}</h2>
         <h3>GET</h3>
         <p>Summary: Mendapatkan informasi bank account user berdasarkan nomor rekening</p>
         <p>Parameters:
@@ -365,7 +342,7 @@
     </section>
 
     <section id="transactions">
-        <h2>/api/transactions</h2>
+        <h2>/transactions</h2>
         <h3>POST</h3>
         <p>Summary: Melakukan transfer</p>
         <p>Request Body:
@@ -398,7 +375,7 @@
     </section>
 
     <section id="transaction-id">
-        <h2>/api/transaction/{transaction_id}</h2>
+        <h2>/transaction/{transaction_id}</h2>
         <h3>GET</h3>
         <p>Summary: Mendapatkan informasi transaksi berdasarkan Transaction ID</p>
         <p>Parameters:
@@ -426,7 +403,7 @@
     </section>
 
     <section id="transactions-history">
-        <h2>/api/transactions/history/{user_id}</h2>
+        <h2>/transactions/history/{user_id}</h2>
         <h3>POST</h3>
         <p>Summary: Mendapatkan riwayat transaksi pengguna dalam rentang tanggal tertentu</p>
         <p>Description: Endpoint ini mengembalikan daftar transaksi untuk pengguna tertentu dalam rentang tanggal yang diberikan.</p>
@@ -484,7 +461,7 @@
     </section>
 
     <section id="saved-accounts">
-        <h2>/api/saved-accounts/{user-id}</h2>
+        <h2>/saved-accounts/{user-id}</h2>
         <h3>GET</h3>
         <p>Summary: Mendapatkan daftar semua bank account yang disimpan</p>
         <p>Parameters:
