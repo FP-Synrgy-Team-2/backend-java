@@ -26,8 +26,7 @@ public class QrisController {
     public ResponseEntity<BufferedImage> generateQRCode(@RequestBody QrisMerchantDTO qrisMerchantDTO )throws Exception {
         String text = qrisService.encrypString(qrisMerchantDTO);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = 
-        barcodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200);
+        BitMatrix bitMatrix = barcodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200);
 
     return new ResponseEntity<>(MatrixToImageWriter.toBufferedImage(bitMatrix),HttpStatus.OK);
     }
