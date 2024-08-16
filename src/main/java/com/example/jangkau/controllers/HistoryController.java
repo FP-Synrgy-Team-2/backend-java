@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/history")
 public class HistoryController {
@@ -30,6 +31,7 @@ public class HistoryController {
 
     @Autowired
     UserRepository userRepository;
+
     @Autowired
     private TransactionRepository transactionRepository;
 
