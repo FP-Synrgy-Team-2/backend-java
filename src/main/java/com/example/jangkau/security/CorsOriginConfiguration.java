@@ -34,7 +34,7 @@ public class CorsOriginConfiguration implements Filter {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            filter.doFilter(req, res);
+              filter.doFilter(req, res);
         }
     }
 }
