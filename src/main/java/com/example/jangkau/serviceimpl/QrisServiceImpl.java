@@ -30,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import javax.persistence.criteria.Predicate;
@@ -50,20 +51,18 @@ public class QrisServiceImpl implements QrisService {
 
     @Autowired MerchantRepository merchantRepository;
 
-    private static final String SECRET_KEY = "mySecretKey12345"; // Kunci enkripsi yang digunakan
+    private static final String SECRET_KEY = "mySecretKey12345";
+    private String initVector = "1234567812345678"; 
 
     @Override
-    public String generateQrCode(QrisMerchantDTO qrisMerchantDTO) {
+    public String encrypString(QrisMerchantDTO qrisMerchantDTO) {
 
         try {
             Merchant merchant = merchantRepository.findById(qrisMerchantDTO.getMerchantId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Merchant Not Found"));
             String text = merchant.getAccount().getId()+ "," + merchant.getName()+ "," + merchant.getAccount().getAccountNumber();
-            byte[] byteArray = text.getBytes();
-            String encryptedString = encrypt(byteArray);
-            
+            String encryptedString = encrypt(text);
             return encryptedString;
-
         } catch (ResponseStatusException e) {
             throw e; 
         } catch (Exception e) {
@@ -111,14 +110,13 @@ public class QrisServiceImpl implements QrisService {
     }
 
     @Override
-    public String encrypt(byte[] text) throws Exception {
+    public String encrypt(String text) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-        byte[] encodeBytes = Base64.getEncoder().encode(text);
-        byte[] encryptedBytes = cipher.doFinal(encodeBytes);
+        byte[] encryptedBytes = cipher.doFinal(text.getBytes());
 
-        return new String(encryptedBytes);
+        return  Base64.getEncoder().encodeToString(encryptedBytes);
     }
 }

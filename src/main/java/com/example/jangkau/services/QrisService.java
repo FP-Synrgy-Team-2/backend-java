@@ -14,9 +14,10 @@ import java.util.UUID;
 
 public interface QrisService {
 
-    String generateQrCode(QrisMerchantDTO qrisMerchantDTO);
+    String encrypString(QrisMerchantDTO qrisMerchantDTO);
     Merchant createMerchant(MerchantRequestDTO MerchantRequestDTO);
     String decrypt(String encryptedData) throws Exception;
-    String encrypt(byte[] text) throws Exception;
+    String encrypt(String text) throws Exception;
+
 
 }
