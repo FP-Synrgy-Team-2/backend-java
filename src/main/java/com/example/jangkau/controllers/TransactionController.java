@@ -29,6 +29,7 @@ import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Transactions;
 import com.example.jangkau.models.User;
 import com.example.jangkau.services.AccountService;
+import com.example.jangkau.services.QrisService;
 import com.example.jangkau.services.SavedAccountService;
 import com.example.jangkau.services.TransactionService;
 import com.example.jangkau.services.UserService;
@@ -48,6 +49,7 @@ public class TransactionController {
     @Autowired SavedAccountService savedAccountService;
     @Autowired UserService userService;
     @Autowired TransactionMapper transactionMapper;
+    @Autowired QrisService qrisService;
 
 
 
@@ -56,9 +58,8 @@ public class TransactionController {
         Map<String, Object> response = new HashMap<>();
         TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
         if (newTransaction != null) {
-            Account accountId = accountService.getAccountByAccountId(newTransaction.getTo().getAccountId());
-            Account beneficiary = accountService.getAccountByAccountId(newTransaction.getFrom().getAccountId());
-
+            Account accountId = accountService.getAccountByAccountId(newTransaction.getFrom().getAccountId());
+            Account beneficiary = accountService.getAccountByAccountId(newTransaction.getTo().getAccountId());
 
             Transactions trans = modelMapper.map(newTransaction, Transactions.class);
             trans.setAccountId(accountId);
@@ -115,7 +116,7 @@ public class TransactionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
-    private static final String SECRET_KEY = "mySecretKey12345"; // Kunci enkripsi yang digunakan
+    
 
     @PostMapping("/qrisTransaction")
     public ResponseEntity<?> qrisTransaction(@RequestBody QrisRequest qrisRequest) {
@@ -133,7 +134,7 @@ public class TransactionController {
             logger.info("Encrypted Data Received: {}", encryptedData);
 
             // Dekripsi data terenkripsi
-            String decryptedData = decrypt(encryptedData);
+            String decryptedData = qrisService.decrypt(encryptedData);
             logger.info("Decrypted Data: {}", decryptedData);
 
             // Asumsikan data terdekripsi dipisahkan dengan koma
@@ -160,18 +161,5 @@ public class TransactionController {
             logger.error("Kesalahan saat memproses data", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kesalahan saat memproses data");
         }
-    }
-
-    private String decrypt(String encryptedData) throws Exception {
-        // Setup cipher untuk dekripsi
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
-        // Dekripsi data
-        byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
-        byte[] decryptedBytes = cipher.doFinal(decodedBytes);
-
-        return new String(decryptedBytes);
     }
 }

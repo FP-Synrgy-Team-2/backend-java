@@ -4,11 +4,21 @@ import com.example.jangkau.dto.QrisMerchantDTO;
 import com.example.jangkau.dto.UserRequest;
 import com.example.jangkau.dto.UserResponse;
 import com.example.jangkau.mapper.UserMapper;
+import com.example.jangkau.models.Account;
+import com.example.jangkau.models.Merchant;
 import com.example.jangkau.models.User;
+import com.example.jangkau.repositories.AccountRepository;
+import com.example.jangkau.repositories.MerchantRepository;
 import com.example.jangkau.repositories.UserRepository;
+import com.example.jangkau.dto.AccountResponse;
+import com.example.jangkau.dto.AccountResponseDTO;
+import com.example.jangkau.dto.MerchantRequestDTO;
 import com.example.jangkau.services.QrisService;
 import com.example.jangkau.services.UserService;
 import com.example.jangkau.services.ValidationService;
+import com.google.api.client.util.Value;
+import com.google.common.base.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +28,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 import javax.persistence.criteria.Predicate;
+
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,23 +46,79 @@ import java.util.UUID;
 @Service
 public class QrisServiceImpl implements QrisService {
 
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired AccountRepository accountRepository;
 
-    @Autowired
-    private ValidationService validationService;
+    @Autowired MerchantRepository merchantRepository;
 
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private PasswordEncoder encoder;
+    private static final String SECRET_KEY = "mySecretKey12345"; // Kunci enkripsi yang digunakan
 
     @Override
-    public UserResponse generateQrCode(QrisMerchantDTO qrisMerchantDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateQrCode'");
+    public String generateQrCode(QrisMerchantDTO qrisMerchantDTO) {
+
+        try {
+            Merchant merchant = merchantRepository.findById(qrisMerchantDTO.getMerchantId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Merchant Not Found"));
+            String text = merchant.getAccount().getId()+ "," + merchant.getName()+ "," + merchant.getAccount().getAccountNumber();
+            byte[] byteArray = text.getBytes();
+            String encryptedString = encrypt(byteArray);
+            
+            return encryptedString;
+
+        } catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
+        }
     }
 
-    
+    @Override
+    public Merchant createMerchant(MerchantRequestDTO merchantRequestDTO) {
+        try {
+            Merchant existMerchant = merchantRepository.findByNameandAccountId(merchantRequestDTO.getName(), merchantRequestDTO.getAccountId())
+                .orElse(null);
+            Account account = accountRepository.findById(merchantRequestDTO.getAccountId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account Not Found"));
+
+            if (existMerchant != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Merchant Already Exist");
+            }else{
+                Merchant merchant = Merchant.builder()
+                        .name(merchantRequestDTO.getName())
+                        .account(account)
+                        .build();
+                merchantRepository.save(merchant);
+                merchant.setId(merchant.getId());
+                return merchant;
+            }
+        }catch (ResponseStatusException e) {
+            throw e; 
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
+        } 
+    }
+
+    @Override
+    public String decrypt(String encryptedData) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+        byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
+        byte[] decryptedBytes = cipher.doFinal(decodedBytes);
+
+        return new String(decryptedBytes);
+        
+    }
+
+    @Override
+    public String encrypt(byte[] text) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+        byte[] encodeBytes = Base64.getEncoder().encode(text);
+        byte[] encryptedBytes = cipher.doFinal(encodeBytes);
+
+        return new String(encryptedBytes);
+    }
 }

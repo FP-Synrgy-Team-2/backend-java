@@ -11,6 +11,5 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class QrisMerchantDTO {
-    private String merchantName;
-    private String accountNumber;
+    private UUID merchantId;
 }
