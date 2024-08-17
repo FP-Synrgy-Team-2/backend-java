@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QrisMerchantDTO {
-    private UUID merchantId;
+    private UUID id;
 }

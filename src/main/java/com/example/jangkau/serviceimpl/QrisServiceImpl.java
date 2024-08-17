@@ -33,11 +33,26 @@ public class QrisServiceImpl implements QrisService {
 
     @Override
     public String encrypString(QrisMerchantDTO qrisMerchantDTO) {
-
+        UUID id;
+        String owner;
+        String number;
         try {
-            Merchant merchant = merchantRepository.findById(qrisMerchantDTO.getMerchantId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Merchant Not Found"));
-            String text = merchant.getAccount().getId()+ "," + merchant.getName()+ "," + merchant.getAccount().getAccountNumber();
+            Merchant merchant = merchantRepository.findById(qrisMerchantDTO.getId())
+                .orElse(null);
+            Account account = accountRepository.findById(qrisMerchantDTO.getId())
+                .orElse(null);
+            if (merchant != null) {
+                id = merchant.getAccount().getId();
+                owner = merchant.getName();
+                number = merchant.getAccount().getAccountNumber();
+            }else if(account != null){
+                id = account.getId();
+                owner = account.getOwnerName();
+                number = account.getAccountNumber();
+            }else{
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Incorrect ID");
+            }
+            String text = id+ "," + owner+ "," + number;
             String encryptedString = encrypt(text);
             return encryptedString;
         } catch (ResponseStatusException e) {
