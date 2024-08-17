@@ -78,7 +78,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         this.insertRoles();
         this.insertClients();
         this.insertUsers();
-        this.insertMerchants();
+//        this.insertMerchants();
     }
 
     @Transactional
@@ -187,31 +187,31 @@ public class DatabaseSeeder implements ApplicationRunner {
         }
     }
 
-    @Transactional
-    public void insertMerchants() {
-        Account account1 = createAccount("John's Shop");
-        Account account2 = createAccount("Fulan's Mart");
-
-        createMerchant("John's Shop", account1);
-        createMerchant("Fulan's Mart", account2);
-    }
-
-    @Transactional
-    public Account createAccount(String ownerName) {
-        Account account = Account.builder()
-                .ownerName(ownerName)
-                .balance(1000000.0)
-                .build();
-        account.setPin(123456, encoder);
-        accountRepository.save(account);
-        return account;
-    }
-
-    @Transactional
-    public void createMerchant(String merchantName, Account account) {
-        Merchant merchant = new Merchant();
-        merchant.setName(merchantName);
-        merchant.setAccount(account);
-        merchantRepository.save(merchant);
-    }
+//    @Transactional
+//    public void insertMerchants() {
+//        Account account1 = createAccount("John's Shop");
+//        Account account2 = createAccount("Fulan's Mart");
+//
+//        createMerchant("John's Shop", account1);
+//        createMerchant("Fulan's Mart", account2);
+//    }
+//
+//    @Transactional
+//    public Account createAccount(String ownerName) {
+//        Account account = Account.builder()
+//                .ownerName(ownerName)
+//                .balance(1000000.0)
+//                .build();
+//        account.setPin(123456, encoder);
+//        accountRepository.save(account);
+//        return account;
+//    }
+//
+//    @Transactional
+//    public void createMerchant(String merchantName, Account account) {
+//        Merchant merchant = new Merchant();
+//        merchant.setName(merchantName);
+//        merchant.setAccount(account);
+//        merchantRepository.save(merchant);
+//    }
 }
