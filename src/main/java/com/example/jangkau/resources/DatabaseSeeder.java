@@ -1,19 +1,18 @@
 package com.example.jangkau.resources;
 
 import com.example.jangkau.models.Account;
-import com.example.jangkau.models.Transactions;
+import com.example.jangkau.models.Merchant;
 import com.example.jangkau.models.User;
 import com.example.jangkau.models.oauth2.Client;
 import com.example.jangkau.models.oauth2.Role;
 import com.example.jangkau.models.oauth2.RolePath;
 import com.example.jangkau.repositories.AccountRepository;
+import com.example.jangkau.repositories.MerchantRepository;
 import com.example.jangkau.repositories.TransactionRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.repositories.oauth2.ClientRepository;
 import com.example.jangkau.repositories.oauth2.RolePathRepository;
 import com.example.jangkau.repositories.oauth2.RoleRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -51,6 +48,10 @@ public class DatabaseSeeder implements ApplicationRunner {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private MerchantRepository merchantRepository;
+
+
     private String[] users = new String[]{
             "admin@mail.com:Admin1:Admin123!:Admin:08123456789:ROLE_SUPERUSER ROLE_USER ROLE_ADMIN",
             "johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:08987654321:ROLE_USER",
@@ -70,8 +71,6 @@ public class DatabaseSeeder implements ApplicationRunner {
             "ROLE_READ:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS",
             "ROLE_WRITE:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS"
     };
-    @Autowired
-    private TransactionRepository transactionRepository;
 
     @Override
     @Transactional
@@ -79,6 +78,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         this.insertRoles();
         this.insertClients();
         this.insertUsers();
+        this.insertMerchants();
     }
 
     @Transactional
@@ -170,16 +170,6 @@ public class DatabaseSeeder implements ApplicationRunner {
             insertAccounts(oldUser, oldUser.getFullName(), i);
             i++;
         }
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(2024, Calendar.JULY, 1);
-//        Date date0 = calendar.getTime();
-//        calendar.set(2024, Calendar.JULY, 26);
-//        Date date1 = calendar.getTime();
-//        calendar.set(2024, Calendar.JULY, 27);
-//        Date date2 = calendar.getTime();
-//        insertTransactions(userList.get(0), userList.get(1), 200000.0, date0);
-//        insertTransactions(userList.get(2), userList.get(1), 700000.0, date1);
-//        insertTransactions(userList.get(1), userList.get(0), 500000.0, date2);
     }
 
     @Transactional
@@ -197,24 +187,31 @@ public class DatabaseSeeder implements ApplicationRunner {
         }
     }
 
-//    @Transactional
-//    public void insertTransactions(User sender, User recipient, Double amount, Date transactionDate) {
-//        Account sourceAccount = accountRepository.findByUser(sender).orElse(null);
-//        Account recipientAccount = accountRepository.findByUser(recipient).orElse(null);
-//        if ((null == sourceAccount) || (null == recipientAccount)) throw new RuntimeException("Account not found");
-//        else {
-//            Transactions transactions = Transactions.builder()
-//                    .accountId(sourceAccount)
-//                    .beneficiaryAccount(recipientAccount)
-//                    .amount(amount)
-//                    .transactionDate(transactionDate)
-//                    .note("db seeder test")
-//                    .build();
-//            transactionRepository.save(transactions);
-//            sourceAccount.setBalance(sourceAccount.getBalance() - (transactions.getAmount() + transactions.getAdminFee()));
-//            recipientAccount.setBalance(recipientAccount.getBalance() + transactions.getAmount());
-//            accountRepository.save(sourceAccount);
-//            accountRepository.save(recipientAccount);
-//        }
-//    }
+    @Transactional
+    public void insertMerchants() {
+        Account account1 = createAccount("John's Shop");
+        Account account2 = createAccount("Fulan's Mart");
+
+        createMerchant("John's Shop", account1);
+        createMerchant("Fulan's Mart", account2);
+    }
+
+    @Transactional
+    public Account createAccount(String ownerName) {
+        Account account = Account.builder()
+                .ownerName(ownerName)
+                .balance(1000000.0)
+                .build();
+        account.setPin(123456, encoder);
+        accountRepository.save(account);
+        return account;
+    }
+
+    @Transactional
+    public void createMerchant(String merchantName, Account account) {
+        Merchant merchant = new Merchant();
+        merchant.setName(merchantName);
+        merchant.setAccount(account);
+        merchantRepository.save(merchant);
+    }
 }
