@@ -55,7 +55,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     private String[] users = new String[]{
             "admin@mail.com:Admin1:Admin123!:Admin:08123456789:ROLE_SUPERUSER ROLE_USER ROLE_ADMIN",
             "johndoe@mail.com:Johndoe123:Johndoe123!:John Doe:08987654321:ROLE_USER",
-            "fulan@mail.com:Fulan123:Fulan123!:Fulan:08123456789:ROLE_USER"
+            "fulan@mail.com:Fulan123:Fulan123!:Fulan:08123456789:ROLE_USER",
+            "merchant@mail.com:Merchant123:Merchant123!:Merchant:08123456789:ROLE_USER"
     };
 
     private String[] clients = new String[]{
@@ -186,32 +187,4 @@ public class DatabaseSeeder implements ApplicationRunner {
             accountRepository.save(oldAccount);
         }
     }
-
-//    @Transactional
-//    public void insertMerchants() {
-//        Account account1 = createAccount("John's Shop");
-//        Account account2 = createAccount("Fulan's Mart");
-//
-//        createMerchant("John's Shop", account1);
-//        createMerchant("Fulan's Mart", account2);
-//    }
-//
-//    @Transactional
-//    public Account createAccount(String ownerName) {
-//        Account account = Account.builder()
-//                .ownerName(ownerName)
-//                .balance(1000000.0)
-//                .build();
-//        account.setPin(123456, encoder);
-//        accountRepository.save(account);
-//        return account;
-//    }
-//
-//    @Transactional
-//    public void createMerchant(String merchantName, Account account) {
-//        Merchant merchant = new Merchant();
-//        merchant.setName(merchantName);
-//        merchant.setAccount(account);
-//        merchantRepository.save(merchant);
-//    }
 }

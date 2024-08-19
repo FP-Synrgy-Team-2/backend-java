@@ -1,6 +1,5 @@
 package com.example.jangkau.services;
 
-import com.example.jangkau.dto.MerchantRequestDTO;
 import com.example.jangkau.dto.QrisMerchantDTO;
 
 public interface QrisService {

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +13,5 @@ import javax.validation.constraints.NotNull;
 public class MerchantRequest {
     @NotBlank(message = "Must not empty")
     private String name;
+    private UUID accountId;
 }

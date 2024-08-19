@@ -3,7 +3,9 @@ package com.example.jangkau.serviceimpl;
 import com.example.jangkau.dto.MerchantRequest;
 import com.example.jangkau.dto.MerchantResponse;
 import com.example.jangkau.mapper.MerchantMapper;
+import com.example.jangkau.models.Account;
 import com.example.jangkau.models.Merchant;
+import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.MerchantRepository;
 import com.example.jangkau.services.MerchantService;
 import com.example.jangkau.services.ValidationService;
@@ -33,6 +35,9 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private MerchantMapper merchantMapper;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     private MerchantResponse getMerchantResponse(MerchantRequest request, Merchant merchant) {
         merchant.setName(request.getName());
         merchantRepository.save(merchant);
@@ -42,9 +47,19 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public MerchantResponse create(MerchantRequest request) {
         validationService.validate(request);
+
+        Account account = accountRepository.findById(request.getAccountId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account ID not found"));
+
         Merchant merchant = new Merchant();
-        return getMerchantResponse(request, merchant);
+        merchant.setName(request.getName());
+        merchant.setAccount(account);
+
+        merchant = merchantRepository.save(merchant);
+
+        return merchantMapper.toMerchantResponse(merchant);
     }
+
 
     @Override
     public MerchantResponse findById(UUID id) {

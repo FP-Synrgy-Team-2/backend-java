@@ -4,7 +4,6 @@ import com.example.jangkau.dto.QrisMerchantDTO;
 import com.example.jangkau.models.Account;
 import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.models.Merchant;
-import com.example.jangkau.dto.MerchantRequestDTO;
 import com.example.jangkau.repositories.MerchantRepository;
 import com.example.jangkau.services.QrisService;
 
