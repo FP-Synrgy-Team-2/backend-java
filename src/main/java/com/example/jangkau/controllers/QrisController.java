@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 public class QrisController {
 
     @Autowired QrisService qrisService;
-    @GetMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
+    @PostMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<BufferedImage> generateQRCode(@RequestBody QrisMerchantDTO qrisMerchantDTO )throws Exception {
         String text = qrisService.encrypString(qrisMerchantDTO);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
