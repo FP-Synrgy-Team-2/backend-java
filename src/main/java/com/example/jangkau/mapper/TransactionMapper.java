@@ -9,7 +9,6 @@ import com.example.jangkau.models.Transactions;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +23,7 @@ public class TransactionMapper {
                 .transactionDate(transactions.getTransactionDate())
                 .note(transactions.getNote())
                 .total(transactions.getAmount() + transactions.getAdminFee())
+                .transactionalType(transactions.getTransactionType())
                 .build();
     }
 
@@ -37,6 +37,7 @@ public class TransactionMapper {
             .amount(transactions.getAmount())
             .adminFee(transactions.getAdminFee())
             .note(transactions.getNote())
+            .transactionalType(transactions.getTransactionType())
             .build();
         
         if (accountId == transactions.getAccountId().getId()) {

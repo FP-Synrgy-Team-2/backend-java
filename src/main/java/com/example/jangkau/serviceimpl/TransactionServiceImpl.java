@@ -78,6 +78,7 @@ public class TransactionServiceImpl implements TransactionService{
                 .transactionDate(transactionsRequestDTO.getTransactionDate())
                 .note(transactionsRequestDTO.getNote())
                 .isSaved(transactionsRequestDTO.isSaved())
+                .transactionType("TRANSFER")
                 .build();
             transactionRepository.save(newTransaction);
             newTransaction.setTransactionId(newTransaction.getTransactionId());
