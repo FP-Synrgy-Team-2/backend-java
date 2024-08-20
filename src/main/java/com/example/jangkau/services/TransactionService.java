@@ -1,6 +1,7 @@
 package com.example.jangkau.services;
 
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import com.example.jangkau.models.Transactions;
 
 public interface TransactionService {
 
-    TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO);
+    TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO, Principal principal);
     
     Transactions getTransaction(String transactionId);
 
