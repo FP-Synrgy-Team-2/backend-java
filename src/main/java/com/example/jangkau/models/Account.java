@@ -47,6 +47,9 @@ public class Account extends BaseDate {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<SavedAccounts> savedAccounts;
 
+    @OneToMany(mappedBy = "accountQr", cascade = CascadeType.ALL)
+    private List<AccountQR> qrs;
+
     private String pin;
 
     @OneToOne(mappedBy = "account")

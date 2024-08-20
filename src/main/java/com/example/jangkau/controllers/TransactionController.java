@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.jangkau.dto.DateFilterRequestDTO;
+import com.example.jangkau.dto.QrisResponseDTO;
 import com.example.jangkau.dto.SavedAccountRequestDTO;
 import com.example.jangkau.dto.AccountResponse;
 import com.example.jangkau.dto.TransactionsHistoryDTO;
@@ -108,43 +109,6 @@ public class TransactionController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
     
 
-    @PostMapping("/qrisTransaction")
-    public ResponseEntity<?> qrisTransaction(@RequestBody QrisRequest qrisRequest) {
-        try {
-            logger.info("Received QrisRequest: {}", qrisRequest);
-
-            String encryptedData = qrisRequest.getEncryptedData();
-            if (encryptedData == null || encryptedData.isEmpty()) {
-                logger.error("Encrypted data is null or empty");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data terenkripsi tidak boleh kosong");
-            }
-
-            logger.info("Encrypted Data Received: {}", encryptedData);
-
-            String decryptedData = qrisService.decrypt(encryptedData);
-            logger.info("Decrypted Data: {}", decryptedData);
-            String[] accountData = decryptedData.split(",");
-            logger.info("Account Data Length: {}", accountData.length);
-
-            if (accountData.length < 3) { 
-                logger.error("Data tidak lengkap: {}", decryptedData);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("merchant tidak ditemukan");
-            }
-
-            AccountResponse accountResponse = AccountResponse.builder()
-                    .accountId(UUID.fromString(accountData[0]))
-                    .ownerName(accountData[1])
-                    .accountNumber(accountData[2])
-                    .build();
-
-            return ResponseEntity.ok(accountResponse);
-
-        } catch (Exception e) {
-            logger.error("Kesalahan saat memproses data", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kesalahan saat memproses data");
-        }
-    }
 }

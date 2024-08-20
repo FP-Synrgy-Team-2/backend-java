@@ -45,6 +45,8 @@ public class Transactions extends BaseDate{
     
     private boolean isSaved;
 
+    private String transactionType;
+
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "accountId")
     private Account accountId;
