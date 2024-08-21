@@ -60,7 +60,7 @@
 <body>
 <header>
     <h1>API Contract - Jangkau</h1>
-    <p><strong>Base Url : https://jangkau-65einymbia-uc.a.run.app/api</strong></p>
+    <p><strong>Base Url : https://jangkau1-65einymbia-et.a.run.app/api</strong></p>
 </header>
 <main>
     <section id="register">
@@ -484,10 +484,10 @@
         </p>
     </section>
 
-    <section id="transsaction-qris">
-        <h2>/transactions/qrisTransaction</h2>
+    <section id="scan-qris">
+        <h2>/qris/scan-qr</h2>
         <h3>POST</h3>
-        <p>Summary: Encryption data qris</p>
+        <p>Summary: Scan qris</p>
         <p>Parameters:
         <pre><code>{
   "encryptedData": "string"
@@ -500,15 +500,37 @@
   {
     "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
     "owner_name": "Merchant 1",
-    "account_number": "8923445590"
+    "account_number": "8923445590",
+    "type": "Merchant"
   }
 ]</code></pre>
             </li>
         </ul>
         </p>
     </section>
-    <section id="generate-qris">
-        <h2>/qris/generate-qr</h2>
+    <section id="generate-qris-merchant">
+        <h2>/qris/merchant/generate-qr</h2>
+        <h3>POST</h3>
+        <p>Summary: Generate qris</p>
+        <p>Parameters:
+        <pre><code>{
+  "id": "45227600-27d1-45e7-ab80-31755f5737b0"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Data berhasil diambil.
+                <pre><code>[
+  {
+    IMAGES QRIS
+  }
+]</code></pre>
+            </li>
+        </ul>
+        </p>
+    </section>
+    <section id="generate-qris-user">
+        <h2>/qris/user/generate-qr</h2>
         <h3>POST</h3>
         <p>Summary: Generate qris</p>
         <p>Parameters:
