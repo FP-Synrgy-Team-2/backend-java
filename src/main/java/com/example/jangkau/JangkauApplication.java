@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.awt.image.BufferedImage;
 
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableScheduling
 public class JangkauApplication {
 
 	public static void main(String[] args) {

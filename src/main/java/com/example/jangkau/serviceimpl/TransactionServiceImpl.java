@@ -1,6 +1,7 @@
 package com.example.jangkau.serviceimpl;
 
 import java.util.Date;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Calendar;
 
+import javax.jws.soap.SOAPBinding.Use;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -29,7 +31,9 @@ import com.example.jangkau.models.User;
 import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.TransactionRepository;
 import com.example.jangkau.repositories.UserRepository;
+import com.example.jangkau.services.AuthService;
 import com.example.jangkau.services.TransactionService;
+import com.example.jangkau.services.UserService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
@@ -38,17 +42,25 @@ public class TransactionServiceImpl implements TransactionService{
     @Autowired AccountRepository accountRepository;
     @Autowired TransactionMapper transactionMapper;
     @Autowired UserRepository userRepository;
+    @Autowired AuthService authService;
     
 
     @Transactional
     @Override
-    public TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO) {
+    public TransactionsResponseDTO createTransaction(TransactionsRequestDTO transactionsRequestDTO, Principal principal) {
         try {
+            User user = authService.getCurrentUser(principal);
+
             Account account = accountRepository.findById(transactionsRequestDTO.getAccountId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
 
+
             Account beneficiaryAccount = accountRepository.findById(transactionsRequestDTO.getBeneficiaryAccount())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Beneficiary account not found"));
+
+            if (account.getUser().getId() != user.getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
 
             if (account.getId() == beneficiaryAccount.getId()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot make transactions to the same bank account");
@@ -56,6 +68,8 @@ public class TransactionServiceImpl implements TransactionService{
             
             if (account.getBalance() < transactionsRequestDTO.getAmount()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
+            }else if (transactionsRequestDTO.getAmount() <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Must be greater than 0");
             }
             Transactions newTransaction = Transactions.builder()
                 .accountId(account)
@@ -64,6 +78,7 @@ public class TransactionServiceImpl implements TransactionService{
                 .transactionDate(transactionsRequestDTO.getTransactionDate())
                 .note(transactionsRequestDTO.getNote())
                 .isSaved(transactionsRequestDTO.isSaved())
+                .transactionType("TRANSFER")
                 .build();
             transactionRepository.save(newTransaction);
             newTransaction.setTransactionId(newTransaction.getTransactionId());

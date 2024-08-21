@@ -1,5 +1,6 @@
 package com.example.jangkau.controllers;
 
+import java.security.Principal;
 import java.util.*;
 
 import com.example.jangkau.dto.auth.QrisRequest;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.jangkau.dto.DateFilterRequestDTO;
+import com.example.jangkau.dto.QrisResponseDTO;
 import com.example.jangkau.dto.SavedAccountRequestDTO;
 import com.example.jangkau.dto.AccountResponse;
 import com.example.jangkau.dto.TransactionsHistoryDTO;
@@ -46,9 +48,9 @@ public class TransactionController {
 
 
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody TransactionsRequestDTO transactionsRequestDTO){
+    public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody TransactionsRequestDTO transactionsRequestDTO, Principal principal){
         Map<String, Object> response = new HashMap<>();
-        TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO);
+        TransactionsResponseDTO newTransaction = transactionService.createTransaction(transactionsRequestDTO, principal);
         if (newTransaction != null) {
             Account accountId = accountService.getAccountByAccountId(newTransaction.getFrom().getAccountId());
             Account beneficiary = accountService.getAccountByAccountId(newTransaction.getTo().getAccountId());
@@ -107,51 +109,6 @@ public class TransactionController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
     
 
-    @PostMapping("/qrisTransaction")
-    public ResponseEntity<?> qrisTransaction(@RequestBody QrisRequest qrisRequest) {
-        try {
-            // Log untuk melihat apakah QrisRequest sudah diterima dengan benar
-            logger.info("Received QrisRequest: {}", qrisRequest);
-
-            // Ambil data terenkripsi dari request
-            String encryptedData = qrisRequest.getEncryptedData();
-            if (encryptedData == null || encryptedData.isEmpty()) {
-                logger.error("Encrypted data is null or empty");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data terenkripsi tidak boleh kosong");
-            }
-
-            logger.info("Encrypted Data Received: {}", encryptedData);
-
-            // Dekripsi data terenkripsi
-            String decryptedData = qrisService.decrypt(encryptedData);
-            logger.info("Decrypted Data: {}", decryptedData);
-
-            // Asumsikan data terdekripsi dipisahkan dengan koma
-            String[] accountData = decryptedData.split(",");
-            logger.info("Account Data Length: {}", accountData.length);
-
-            // Periksa apakah data lengkap
-            if (accountData.length < 3) { // Pastikan ada 3 elemen: accountId, ownerName, accountNumber
-                logger.error("Data tidak lengkap: {}", decryptedData);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("merchant tidak ditemukan");
-            }
-
-            // Buat objek AccountResponse dari data terdekripsi
-            AccountResponse accountResponse = AccountResponse.builder()
-                    .accountId(UUID.fromString(accountData[0]))
-                    .ownerName(accountData[1])
-                    .accountNumber(accountData[2])
-                    .build();
-
-            // Kembalikan respon dengan data akun
-            return ResponseEntity.ok(accountResponse);
-
-        } catch (Exception e) {
-            logger.error("Kesalahan saat memproses data", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kesalahan saat memproses data");
-        }
-    }
 }

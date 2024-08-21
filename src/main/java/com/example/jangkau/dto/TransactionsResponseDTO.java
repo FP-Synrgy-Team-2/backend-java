@@ -20,4 +20,5 @@ public class TransactionsResponseDTO {
     private String note;
     private double adminFee;
     private double total;
+    private String transactionalType;
 }

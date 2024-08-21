@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QrisMerchantDTO {
+public class QrisRequestDTO {
     private UUID id;
 }
