@@ -60,18 +60,14 @@ public class QrisController {
     }
 
     @PostMapping("/scan-qr")
-    public ResponseEntity<?> qrisTransaction(@RequestBody QrisRequest qrisRequest) {
-        try {
-
-            String encryptedData = qrisRequest.getEncryptedData();
-            if (encryptedData == null || encryptedData.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data terenkripsi tidak boleh kosong");
-            }
-            QrisResponseDTO response = qrisService.decrypt(encryptedData);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kesalahan saat memproses data");
+    public ResponseEntity<?> qrisTransaction(@RequestBody QrisRequest qrisRequest) throws Exception {
+        
+        String encryptedData = qrisRequest.getEncryptedData();
+        if (encryptedData == null || encryptedData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data terenkripsi tidak boleh kosong");
         }
+        QrisResponseDTO response = qrisService.decrypt(encryptedData);
+        return new ResponseEntity<>(response, HttpStatus.OK);        
     }
     @PostMapping()
     public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody QrisTransactionRequest request, Principal principal){
