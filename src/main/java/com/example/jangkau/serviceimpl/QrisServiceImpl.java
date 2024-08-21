@@ -237,7 +237,7 @@ public class QrisServiceImpl implements QrisService {
                 .beneficiaryAccount(beneficiaryAccount)
                 .amount(request.getAmount())
                 .transactionDate(request.getTransactionDate())
-                .transactionType("QRIS")
+                .transactionType("")
                 .build();
             transactionRepository.save(newTransaction);
             newTransaction.setTransactionId(newTransaction.getTransactionId());
