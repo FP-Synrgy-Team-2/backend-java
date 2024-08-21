@@ -25,6 +25,7 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
             "/api-docs/**",
             "/swagger-resources/**",
             "/api-contract",
+            "/refresh-token",
             "/merchants"
     };
 
@@ -49,7 +50,6 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .antMatchers(HttpMethod.GET, "/transactions").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/bank-accounts/user/{userId}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/saved-accounts").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/refresh-token").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/qris/generate-qr").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/qris/generate-qr").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/history").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
