@@ -1,6 +1,5 @@
 package com.example.jangkau.controllers;
 
-
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,15 +13,12 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import java.awt.image.BufferedImage;
 
-
-
-
 @RestController
 @RequestMapping("/qris")
 public class QrisController {
 
     @Autowired QrisService qrisService;
-    @GetMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
+    @PostMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<BufferedImage> generateQRCode(@RequestBody QrisMerchantDTO qrisMerchantDTO )throws Exception {
         String text = qrisService.encrypString(qrisMerchantDTO);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
@@ -30,6 +26,4 @@ public class QrisController {
 
     return new ResponseEntity<>(MatrixToImageWriter.toBufferedImage(bitMatrix),HttpStatus.OK);
     }
-        
-
 }

@@ -483,6 +483,51 @@
         </ul>
         </p>
     </section>
+
+    <section id="transsaction-qris">
+        <h2>/transactions/qrisTransaction</h2>
+        <h3>POST</h3>
+        <p>Summary: Encryption data qris</p>
+        <p>Parameters:
+        <pre><code>{
+  "encryptedData": "string"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Data berhasil diambil.
+                <pre><code>[
+  {
+    "account_id": "45227600-27d1-45e7-ab80-31755f5737b0",
+    "owner_name": "Merchant 1",
+    "account_number": "8923445590"
+  }
+]</code></pre>
+            </li>
+        </ul>
+        </p>
+    </section>
+    <section id="generate-qris">
+        <h2>/qris/generate-qr</h2>
+        <h3>POST</h3>
+        <p>Summary: Generate qris</p>
+        <p>Parameters:
+        <pre><code>{
+  "id": "45227600-27d1-45e7-ab80-31755f5737b0"
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Data berhasil diambil.
+                <pre><code>[
+  {
+    IMAGES QRIS
+  }
+]</code></pre>
+            </li>
+        </ul>
+        </p>
+    </section>
 </main>
 </body>
 </html>

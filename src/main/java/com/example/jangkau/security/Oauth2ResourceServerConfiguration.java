@@ -12,22 +12,19 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 
 @Configuration
 @EnableResourceServer
-@EnableGlobalMethodSecurity(securedEnabled = true) //secure definition
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
     private static final String[] WHITE_LIST_URL = {
             "/error**",
             "/auth/**",
             "/auth",
-            "/refresh-token",
             "/oauth/authorize**",
             "/api-docs/**",
             "/swagger-ui/**",
             "/api-docs/**",
             "/swagger-resources/**",
             "/api-contract",
-            "/refresh-token",
-            "/refresh-token/**",
             "/merchants"
     };
 
@@ -52,7 +49,9 @@ public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerA
                 .antMatchers(HttpMethod.GET, "/transactions").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/bank-accounts/user/{userId}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/saved-accounts").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/qris").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/refresh-token").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/qris/generate-qr").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(HttpMethod.POST, "/qris/generate-qr").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/history").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.POST, "/history").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(HttpMethod.OPTIONS, "/history").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
