@@ -45,8 +45,6 @@ public class TransactionController {
     @Autowired TransactionMapper transactionMapper;
     @Autowired QrisService qrisService;
 
-
-
     @PostMapping()
     public ResponseEntity<Map<String, Object>> createNewTransaction(@RequestBody TransactionsRequestDTO transactionsRequestDTO, Principal principal){
         Map<String, Object> response = new HashMap<>();
@@ -109,6 +107,4 @@ public class TransactionController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
-
 }
