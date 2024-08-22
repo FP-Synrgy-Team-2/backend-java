@@ -43,7 +43,6 @@ public class TransactionServiceImpl implements TransactionService{
     @Autowired TransactionMapper transactionMapper;
     @Autowired UserRepository userRepository;
     @Autowired AuthService authService;
-    
 
     @Transactional
     @Override
