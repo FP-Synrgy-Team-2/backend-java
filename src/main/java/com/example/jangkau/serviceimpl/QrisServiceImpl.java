@@ -57,10 +57,16 @@ public class QrisServiceImpl implements QrisService {
     private static final String SECRET_KEY = "mySecretKey12345";
 
     @Override
-    public String encrypStringMerchant(QrisRequestDTO qrisMerchantDTO) {
+    public String encrypStringMerchant(QrisRequestDTO qrisMerchantDTO, Principal principal) {
         try {
+            User user = authService.getCurrentUser(principal);
+
             Merchant merchant = merchantRepository.findById(qrisMerchantDTO.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Merchant not found"));
+
+            if (merchant.getAccount().getUser().getId() != user.getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
 
             String text = merchant.getAccount().getId()+ "," + merchant.getName()+ "," + merchant.getAccount().getAccountNumber() + "," + "Merchant";
             String encryptedString = encrypt(text);
@@ -237,7 +243,7 @@ public class QrisServiceImpl implements QrisService {
                 .beneficiaryAccount(beneficiaryAccount)
                 .amount(request.getAmount())
                 .transactionDate(request.getTransactionDate())
-                .transactionType("")
+                .transactionType("QRIS")
                 .build();
             transactionRepository.save(newTransaction);
             newTransaction.setTransactionId(newTransaction.getTransactionId());
