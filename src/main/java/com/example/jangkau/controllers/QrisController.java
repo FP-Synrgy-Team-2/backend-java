@@ -39,8 +39,8 @@ public class QrisController {
 
 
     @PostMapping(value = "/merchant/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> generateQRCode(@RequestBody QrisRequestDTO qrisMerchantDTO )throws Exception {
-        String text = qrisService.encrypStringMerchant(qrisMerchantDTO);
+    public ResponseEntity<BufferedImage> generateQRCode(@RequestBody QrisRequestDTO qrisMerchantDTO, Principal principal )throws Exception {
+        String text = qrisService.encrypStringMerchant(qrisMerchantDTO, principal);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = barcodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200);
 
