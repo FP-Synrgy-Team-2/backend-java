@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Calendar;
 
-import javax.jws.soap.SOAPBinding.Use;
+//import javax.jws.soap.SOAPBinding.Use;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -43,7 +43,6 @@ public class TransactionServiceImpl implements TransactionService{
     @Autowired TransactionMapper transactionMapper;
     @Autowired UserRepository userRepository;
     @Autowired AuthService authService;
-    
 
     @Transactional
     @Override
