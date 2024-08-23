@@ -11,6 +11,7 @@ import com.example.jangkau.repositories.AccountRepository;
 import com.example.jangkau.repositories.SavedAccountRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.services.AccountService;
+import com.example.jangkau.services.AuthService;
 import com.example.jangkau.services.SavedAccountService;
 
 import org.slf4j.Logger;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.Nullable;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,14 +34,19 @@ public class SavedAccountServiceImpl implements SavedAccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired UserRepository userRepository;
     @Autowired SavedAccountMapper savedAccountMapper;
+    @Autowired AuthService authService;
 
      private static final Logger logger = LoggerFactory.getLogger(SavedAccountServiceImpl.class);
 
     @Override
-    public List<SavedAccounts> getAllSavedAccount(UUID userId) {
+    public List<SavedAccounts> getAllSavedAccount(UUID userId, Principal principal) {
         try {
+            User currentUser = authService.getCurrentUser(principal);
             User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Not Found"));
+            if (user.getId() != currentUser.getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
             return savedAccountRepository.findSavedAccountByUserId(userId);
         } catch (ResponseStatusException e) {
             throw e; 
