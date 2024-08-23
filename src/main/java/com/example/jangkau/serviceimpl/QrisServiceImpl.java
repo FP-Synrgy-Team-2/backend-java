@@ -238,6 +238,7 @@ public class QrisServiceImpl implements QrisService {
             }else if (request.getAmount() <= 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Must be greater than 0");
             }
+
             Transactions newTransaction = Transactions.builder()
                 .accountId(account)
                 .beneficiaryAccount(beneficiaryAccount)

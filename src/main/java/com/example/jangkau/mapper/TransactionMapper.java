@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper {
-    ZoneId wibZoneId = ZoneId.of("Asia/Jakarta");
-    ZonedDateTime nowInWIB = ZonedDateTime.now(wibZoneId);
-    Date transactionDateInWIB = Date.from(nowInWIB.toInstant());
+
     public TransactionsResponseDTO toTransactionResponse(Transactions transactions) {
         return TransactionsResponseDTO.builder()
                 .transactionId(transactions.getTransactionId())
@@ -26,7 +24,7 @@ public class TransactionMapper {
                 .to(toAccountResponse(transactions.getBeneficiaryAccount()))
                 .amount(transactions.getAmount())
                 .adminFee(transactions.getAdminFee())
-                .transactionDate(transactionDateInWIB)
+                .transactionDate(transactions.getTransactionDate())
                 .note(transactions.getNote())
                 .total(transactions.getAmount() + transactions.getAdminFee())
                 .transactionalType(transactions.getTransactionType())
@@ -35,20 +33,20 @@ public class TransactionMapper {
 
     public TransactionsHistoryDTO toTransactionsHistory(Transactions transactions, UUID accountId){
         TransactionsHistoryDTO response =  TransactionsHistoryDTO.builder()
-            .transactionId(transactions.getTransactionId())
-            .total(transactions.getAmount() + transactions.getAdminFee())
-            .transactionDate(transactions.getTransactionDate())
-            .from(toAccountResponse(transactions.getAccountId()))
-            .to(toAccountResponse(transactions.getBeneficiaryAccount()))
-            .amount(transactions.getAmount())
-            .adminFee(transactions.getAdminFee())
-            .note(transactions.getNote())
-            .transactionalType(transactions.getTransactionType())
-            .build();
-        
-        if (accountId == transactions.getAccountId().getId()) {
+                .transactionId(transactions.getTransactionId())
+                .total(transactions.getAmount() + transactions.getAdminFee())
+                .transactionDate(transactions.getTransactionDate())
+                .from(toAccountResponse(transactions.getAccountId()))
+                .to(toAccountResponse(transactions.getBeneficiaryAccount()))
+                .amount(transactions.getAmount())
+                .adminFee(transactions.getAdminFee())
+                .note(transactions.getNote())
+                .transactionalType(transactions.getTransactionType())
+                .build();
+
+        if (accountId.equals(transactions.getAccountId().getId())) {
             response.setType("Pengeluaran");
-        }else if(accountId == transactions.getBeneficiaryAccount().getId()){
+        } else if(accountId.equals(transactions.getBeneficiaryAccount().getId())){
             response.setType("Pemasukan");
         }
         return response;
@@ -56,12 +54,9 @@ public class TransactionMapper {
 
     public AccountResponse toAccountResponse(Account account){
         return AccountResponse.builder()
-            .accountId(account.getId())
-            .ownerName(account.getOwnerName())
-            .accountNumber(account.getAccountNumber())
-            .build();
-    } 
-
-
-   
+                .accountId(account.getId())
+                .ownerName(account.getOwnerName())
+                .accountNumber(account.getAccountNumber())
+                .build();
+    }
 }
