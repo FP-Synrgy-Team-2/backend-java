@@ -37,8 +37,11 @@ import javax.transaction.Transactional;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
@@ -239,12 +242,16 @@ public class QrisServiceImpl implements QrisService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Must be greater than 0");
             }
 
+            ZoneId wibZoneId = ZoneId.of("Asia/Jakarta");
+            ZonedDateTime nowInWIB = ZonedDateTime.now(wibZoneId);
+            Date transactionDateInWIB = Date.from(nowInWIB.toInstant());
+
             Transactions newTransaction = Transactions.builder()
                 .accountId(account)
                 .beneficiaryAccount(beneficiaryAccount)
                 .amount(request.getAmount())
-                .transactionDate(request.getTransactionDate())
-                .transactionType("QRIS")
+                .transactionDate(transactionDateInWIB)
+                .transactionType("TRANSFER QR")
                 .build();
             transactionRepository.save(newTransaction);
             newTransaction.setTransactionId(newTransaction.getTransactionId());
