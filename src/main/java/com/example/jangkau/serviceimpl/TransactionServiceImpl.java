@@ -85,6 +85,7 @@ public class TransactionServiceImpl implements TransactionService{
                     .transactionType("TRANSFER")
                     .build();
 
+            System.out.println("Transaction Date: " + newTransaction.getTransactionDate());
             transactionRepository.save(newTransaction);
 
             return transactionMapper.toTransactionResponse(newTransaction);
