@@ -19,5 +19,5 @@ public interface TransactionService {
     
     Transactions getTransaction(String transactionId);
 
-    List<TransactionsHistoryDTO> getTransactionByDate(String userId, DateFilterRequestDTO request);
+    List<TransactionsHistoryDTO> getTransactionByDate(String userId, DateFilterRequestDTO request, Principal principal);
 }

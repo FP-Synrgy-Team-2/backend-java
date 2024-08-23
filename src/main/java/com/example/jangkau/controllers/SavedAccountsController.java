@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,9 @@ public class SavedAccountsController {
    
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<Map<String, Object>> getSavedAccounts(@PathVariable("user_id") UUID userId){
+    public ResponseEntity<Map<String, Object>> getSavedAccounts(@PathVariable("user_id") UUID userId, Principal principal){
         Map<String, Object> response = new HashMap<>();
-        List<SavedAccounts> savedAccounts = savedAccountService.getAllSavedAccount(userId);
+        List<SavedAccounts> savedAccounts = savedAccountService.getAllSavedAccount(userId, principal);
         List<AccountResponse> savedAccountsList = savedAccounts
                 .stream()
                 .map(account -> savedAccountMapper.toSavedAccountResponse(account))
