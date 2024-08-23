@@ -26,6 +26,7 @@ public class JangkauApplication {
 		System.setProperty("DATABASE_URL", dotenv.get("DATABASE_URL"));
 		System.setProperty("POSTGRESQL_USER", dotenv.get("POSTGRESQL_USER"));
 		System.setProperty("POSTGRESQL_PASS", dotenv.get("POSTGRESQL_PASS"));
+		// TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
 
 		SpringApplication.run(JangkauApplication.class, args);
 	}
