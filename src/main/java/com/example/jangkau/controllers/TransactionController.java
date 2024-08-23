@@ -92,10 +92,11 @@ public class TransactionController {
     @PostMapping("/history/{user_id}")
     public ResponseEntity<Map<String, Object>> getHistoriesByDate(
             @PathVariable("user_id") String userId,
-            @RequestBody(required = false) DateFilterRequestDTO request){
+            @RequestBody(required = false) DateFilterRequestDTO request,
+            Principal principal){
 
         Map<String, Object> response = new HashMap<>();
-        List<TransactionsHistoryDTO> histories = transactionService.getTransactionByDate(userId, request);
+        List<TransactionsHistoryDTO> histories = transactionService.getTransactionByDate(userId, request, principal);
         response.put("status", "success");
         if (histories.isEmpty()) {
             response.put("code", 404);

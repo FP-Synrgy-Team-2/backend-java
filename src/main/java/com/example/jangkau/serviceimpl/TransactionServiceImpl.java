@@ -105,11 +105,16 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<TransactionsHistoryDTO> getTransactionByDate(String userId, DateFilterRequestDTO requestDTO) {
+    public List<TransactionsHistoryDTO> getTransactionByDate(String userId, DateFilterRequestDTO requestDTO, Principal principal) {
         try {
             UUID uuid = UUID.fromString(userId);
+            User currentUser = authService.getCurrentUser(principal);
             User user = userRepository.findById(uuid)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+                    
+            if (user.getId() != currentUser.getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
 
             Account account = accountRepository.findByUser(user)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
