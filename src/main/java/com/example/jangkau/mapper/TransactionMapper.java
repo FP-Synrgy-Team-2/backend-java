@@ -7,6 +7,8 @@ import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
 import com.example.jangkau.models.Transactions;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper {
+    ZoneId wibZoneId = ZoneId.of("Asia/Jakarta");
+    ZonedDateTime nowInWIB = ZonedDateTime.now(wibZoneId);
+    Date transactionDateInWIB = Date.from(nowInWIB.toInstant());
     public TransactionsResponseDTO toTransactionResponse(Transactions transactions) {
         return TransactionsResponseDTO.builder()
                 .transactionId(transactions.getTransactionId())
@@ -21,7 +26,7 @@ public class TransactionMapper {
                 .to(toAccountResponse(transactions.getBeneficiaryAccount()))
                 .amount(transactions.getAmount())
                 .adminFee(transactions.getAdminFee())
-                .transactionDate(new Date())
+                .transactionDate(transactionDateInWIB)
                 .note(transactions.getNote())
                 .total(transactions.getAmount() + transactions.getAdminFee())
                 .transactionalType(transactions.getTransactionType())
