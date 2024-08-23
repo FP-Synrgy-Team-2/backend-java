@@ -21,7 +21,7 @@ import java.util.Date;
 )
 public abstract class BaseDate implements Serializable {
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/javax")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false, updatable = false)
     @CreationTimestamp
@@ -29,15 +29,16 @@ public abstract class BaseDate implements Serializable {
     private Date created_date;
 
     @JsonIgnore
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/javax")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_date", nullable = true)
     private Date deleted_date;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/javax")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = false)
     @UpdateTimestamp
     @JsonIgnore
     private Date updatedDate;
+
 }

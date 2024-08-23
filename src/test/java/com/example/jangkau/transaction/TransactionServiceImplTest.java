@@ -69,7 +69,6 @@ class TransactionServiceImplTest {
         transactionsRequestDTO.setAccountId(UUID.randomUUID());
         transactionsRequestDTO.setBeneficiaryAccount(UUID.randomUUID());
         transactionsRequestDTO.setAmount(1000);
-        transactionsRequestDTO.setTransactionDate(new Date());
         transactionsRequestDTO.setNote("Test Note");
         transactionsRequestDTO.setSaved(false);
 
@@ -112,7 +111,6 @@ class TransactionServiceImplTest {
                 .from(fromAccountResponse)
                 .to(toAccountResponse)
                 .amount(transactionsRequestDTO.getAmount())
-                .transactionDate(transactionsRequestDTO.getTransactionDate())
                 .note(transactionsRequestDTO.getNote())
                 .adminFee(0)
                 .total(transactionsRequestDTO.getAmount())
@@ -183,6 +181,7 @@ class TransactionServiceImplTest {
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
-        assertEquals("Must be greater than 0", exception.getReason());
+        assertEquals("Amount must be greater than 0", exception.getReason());
     }
+
 }

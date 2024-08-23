@@ -7,6 +7,7 @@ import com.example.jangkau.models.Account;
 import com.example.jangkau.models.SavedAccounts;
 import com.example.jangkau.models.Transactions;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class TransactionMapper {
                 .to(toAccountResponse(transactions.getBeneficiaryAccount()))
                 .amount(transactions.getAmount())
                 .adminFee(transactions.getAdminFee())
-                .transactionDate(transactions.getTransactionDate())
+                .transactionDate(new Date())
                 .note(transactions.getNote())
                 .total(transactions.getAmount() + transactions.getAdminFee())
                 .transactionalType(transactions.getTransactionType())
