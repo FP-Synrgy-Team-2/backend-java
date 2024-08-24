@@ -71,15 +71,12 @@ public class TransactionServiceImpl implements TransactionService{
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than 0");
             }
 
-            ZoneId wibZoneId = ZoneId.of("Asia/Jakarta");
-            ZonedDateTime nowInWIB = ZonedDateTime.now(wibZoneId);
-            Date transactionDateInWIB = Date.from(nowInWIB.toInstant());
-
+            
             Transactions newTransaction = Transactions.builder()
                     .accountId(account)
                     .beneficiaryAccount(beneficiaryAccount)
                     .amount(transactionsRequestDTO.getAmount())
-                    .transactionDate(transactionDateInWIB)
+                    .transactionDate(new Date())
                     .note(transactionsRequestDTO.getNote())
                     .isSaved(transactionsRequestDTO.isSaved())
                     .transactionType("TRANSFER")
@@ -126,13 +123,7 @@ public class TransactionServiceImpl implements TransactionService{
             } else if (requestDTO.getStartDate().equals(requestDTO.getEndDate())) {
                 transactions = transactionRepository.findNowTransactions(account.getId(), requestDTO.getStartDate());
             } else {
-                Date endDate = requestDTO.getEndDate();
-                LocalDate localEndDate = endDate.toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
-                localEndDate = localEndDate.plusDays(1);
-                endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), endDate);
+                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), requestDTO.getEndDate());
             }
             List<TransactionsHistoryDTO> histories = transactions
                     .stream()
