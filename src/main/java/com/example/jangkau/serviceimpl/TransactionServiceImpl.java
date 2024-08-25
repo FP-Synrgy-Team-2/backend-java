@@ -13,7 +13,10 @@ import java.util.Calendar;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -141,4 +144,34 @@ public class TransactionServiceImpl implements TransactionService{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }
     }
+
+
+    @Override
+    public List<TransactionsHistoryDTO> getAllTransaction(int page, String userId, Principal principal) {
+        UUID uuid = UUID.fromString(userId);
+        User currentUser = authService.getCurrentUser(principal);
+        User user = userRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+                
+        if (user.getId() != currentUser.getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
+        if (page < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Must greater than 0");
+        }
+        Account account = accountRepository.findByUser(user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
+
+        Pageable pageable = PageRequest.of(page-1, 5, Sort.by("transactionDate").descending());
+        List<Transactions> transactions = transactionRepository.findByAccountIdOrBeneficiaryAccount(account, account, pageable);
+        List<TransactionsHistoryDTO> histories = transactions
+                    .stream()
+                    .map(transaction -> transactionMapper.toTransactionsHistory(transaction, account.getId()))
+                    .collect(Collectors.toList());
+            return histories;
+
+    }
+
+    
 }
