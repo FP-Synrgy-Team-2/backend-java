@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Calendar;
 
-//import javax.jws.soap.SOAPBinding.Use;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -18,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.webjars.NotFoundException;
 
-import com.example.jangkau.dto.AccountResponse;
 import com.example.jangkau.dto.DateFilterRequestDTO;
 import com.example.jangkau.dto.TransactionsHistoryDTO;
 import com.example.jangkau.dto.TransactionsRequestDTO;
@@ -34,7 +31,6 @@ import com.example.jangkau.repositories.TransactionRepository;
 import com.example.jangkau.repositories.UserRepository;
 import com.example.jangkau.services.AuthService;
 import com.example.jangkau.services.TransactionService;
-import com.example.jangkau.services.UserService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
@@ -71,18 +67,19 @@ public class TransactionServiceImpl implements TransactionService{
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than 0");
             }
 
-            
+            // Menggunakan ZonedDateTime untuk waktu transaksi
+            ZonedDateTime transactionDate = ZonedDateTime.now(ZoneId.of("Asia/Jakarta"));
+
             Transactions newTransaction = Transactions.builder()
                     .accountId(account)
                     .beneficiaryAccount(beneficiaryAccount)
                     .amount(transactionsRequestDTO.getAmount())
-                    .transactionDate(new Date())
+                    .transactionDate(Date.from(transactionDate.toInstant()))  // Konversi ke Date
                     .note(transactionsRequestDTO.getNote())
                     .isSaved(transactionsRequestDTO.isSaved())
                     .transactionType("TRANSFER")
                     .build();
 
-            System.out.println("Transaction Date: " + newTransaction.getTransactionDate());
             transactionRepository.save(newTransaction);
 
             return transactionMapper.toTransactionResponse(newTransaction);
@@ -92,7 +89,6 @@ public class TransactionServiceImpl implements TransactionService{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }
     }
-
 
     @Override
     public Transactions getTransaction(String transaction_id) {
@@ -109,7 +105,7 @@ public class TransactionServiceImpl implements TransactionService{
             User currentUser = authService.getCurrentUser(principal);
             User user = userRepository.findById(uuid)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-                    
+
             if (user.getId() != currentUser.getId()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
             }
@@ -118,13 +114,20 @@ public class TransactionServiceImpl implements TransactionService{
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found"));
             List<Transactions> transactions;
 
-            if (requestDTO == null) {
-                transactions = transactionRepository.findAllTransactions(account.getId());
-            } else if (requestDTO.getStartDate().equals(requestDTO.getEndDate())) {
-                transactions = transactionRepository.findNowTransactions(account.getId(), requestDTO.getStartDate());
+            // Pastikan waktu awal dan akhir menggunakan zonedDateTime Asia/Jakarta
+            if (requestDTO != null) {
+                ZonedDateTime startDate = requestDTO.getStartDate().toInstant().atZone(ZoneId.of("Asia/Jakarta"));
+                ZonedDateTime endDate = requestDTO.getEndDate().toInstant().atZone(ZoneId.of("Asia/Jakarta")).plusDays(1).minusNanos(1);
+
+                if (requestDTO.getStartDate().equals(requestDTO.getEndDate())) {
+                    transactions = transactionRepository.findNowTransactions(account.getId(), Date.from(startDate.toInstant()));
+                } else {
+                    transactions = transactionRepository.findAllTransactionsByDate(account.getId(), Date.from(startDate.toInstant()), Date.from(endDate.toInstant()));
+                }
             } else {
-                transactions = transactionRepository.findAllTransactionsByDate(account.getId(), requestDTO.getStartDate(), requestDTO.getEndDate());
+                transactions = transactionRepository.findAllTransactions(account.getId());
             }
+
             List<TransactionsHistoryDTO> histories = transactions
                     .stream()
                     .map(transaction -> transactionMapper.toTransactionsHistory(transaction, account.getId()))
@@ -133,7 +136,7 @@ public class TransactionServiceImpl implements TransactionService{
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         } catch (ResponseStatusException e) {
-            throw e; 
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }

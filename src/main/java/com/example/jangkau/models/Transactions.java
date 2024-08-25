@@ -38,7 +38,6 @@ public class Transactions extends BaseDate{
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "transactionDate", updatable = false)
-    @CreatedDate
     private Date transactionDate;
 
     private String note;
