@@ -561,6 +561,48 @@
         </ul>
         </p>
     </section>
+
+    <section id="qr-transactions">
+        <h2>/qris</h2>
+        <h3>POST</h3>
+        <p>Summary: Melakukan transfer dengan qr code</p>
+        <p>Request Body:
+        <pre><code>{
+  "account_id": "{id account pengirim}",
+  "beneficiary_account": "{id account penerima}",
+  "amount": 540000
+}</code></pre>
+        </p>
+        <p>Responses:
+        <ul>
+            <li>200: Transaksi Berhasil!
+                <pre><code>{
+    "data": {
+        "transaction_id": "7e2875fd-d9f1-42c4-8fcc-ef1890172ccf",
+        "from": {
+            "account_id": "5261b75a-0a44-42c2-a491-53d97c4ceaf8",
+            "owner_name": "John Doe",
+            "account_number": "403956851440"
+        },
+        "to": {
+            "account_id": "ae1e7697-fb12-4b6d-beb0-8dab80349c6a",
+            "owner_name": "Admin",
+            "account_number": "408058481847"
+        },
+        "amount": 1000.0,
+        "transaction_date": "2024-07-12 08:26:37",
+        "note": "Uang kos",
+        "admin_fee": 0.0,
+        "total": 1000.0,
+        "transactional_type": "TRANSFER"
+    },
+    "status": "success"
+}</code></pre>
+            </li>
+            <li>400: Bad Request</li>
+        </ul>
+        </p>
+    </section>
 </main>
 </body>
 </html>
