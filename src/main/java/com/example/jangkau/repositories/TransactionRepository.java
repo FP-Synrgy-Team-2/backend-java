@@ -35,10 +35,9 @@ public interface TransactionRepository extends JpaRepository<Transactions, UUID>
             "ORDER BY transaction_date DESC", nativeQuery = true)
     List<Transactions> findAllTransactions(UUID accountId);
 
-    @Query(value = "SELECT * FROM transactions " +
-            "WHERE (account_id = ?1 OR beneficiary_account = ?1) " +
-            "AND transaction_date = ?2 " +
-            "AND deleted_date IS NULL " +
-            "ORDER BY transaction_date DESC", nativeQuery = true)
+    @Query(value = "select * from transactions\n" +
+            "where (account_id = ?1 or beneficiary_account = ?1) and DATE(transaction_date) = DATE(?2) and deleted_date is null\n" +
+            "order by transaction_date DESC", nativeQuery = true)
     List<Transactions> findNowTransactions(UUID accountId, Date date);
+
 }
