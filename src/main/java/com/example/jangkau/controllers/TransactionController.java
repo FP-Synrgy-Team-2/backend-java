@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -106,6 +107,19 @@ public class TransactionController {
         } else {
             response.put("data", histories);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/history-pageable/{user_id}")
+    public ResponseEntity<Map<String, Object>> getHistoriesPaging(
+            @PathVariable("user_id") String userId,
+            @RequestParam int page, 
+            Principal principal){
+
+        Map<String, Object> response = new HashMap<>();
+        List<TransactionsHistoryDTO> histories = transactionService.getAllTransaction(page, userId, principal);
+        response.put("status", "success");
+        response.put("data", histories);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

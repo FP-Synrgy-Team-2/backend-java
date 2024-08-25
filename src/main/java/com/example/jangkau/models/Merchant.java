@@ -25,7 +25,7 @@ public class Merchant extends BaseDate {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "merchant_name")
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)

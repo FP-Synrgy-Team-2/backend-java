@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.example.jangkau.models.Account;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,7 +24,7 @@ public interface TransactionRepository extends JpaRepository<Transactions, UUID>
 
     List<Transactions> findByBeneficiaryAccount(Account beneficiaryAccount);
     
-    List<Transactions> findByAccountId(Account account);
+    List<Transactions> findByAccountIdOrBeneficiaryAccount(Account accountId, Account beneficiaryAccount, Pageable pageable);
 
     @Query(value = "select * from transactions\n"+
         "where (account_id = ?1 or beneficiary_account = ?1) and DATE(transaction_date) >= ?2 and DATE(transaction_date) <= ?3 and deleted_date is null\n"+
